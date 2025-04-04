@@ -1,6 +1,17 @@
 ﻿namespace Flashcards.Model
 {
-    internal class Stacks
+    public class Stacks
     {
+        public int Id { get; set; }
+        
+        public string? Name { get; set; }
+
+        public Stacks() { }
+
+        public Stacks(int id, string name)
+        {
+            Id = id; 
+            Name = name;
+        }
     }
 }

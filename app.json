@@ -1,5 +1,5 @@
 {
     "ConnectionStrings": {
-        "connection": "Server=DESKTOP-PLS9OA9; Database=FlashcardsDB; Integrated Security=True;"
+        "connection": "Server=DESKTOP-PLS9OA9; Database=FlashcardsDB; TrustServerCertificate=True;"
     }
 }
