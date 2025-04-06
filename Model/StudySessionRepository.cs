@@ -17,7 +17,9 @@ namespace Flashcards.Model
             {
                 connection.Open();
                 string createTableQuery = @"
-                    CREATE TABLE IF NOT EXISTS StudySessionStats (
+                    IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'StudySessionStats')
+                    BEGIN
+                        CREATE TABLE StudySessionStats (
                         SessionID INT IDENTITY(1,1) PRIMARY KEY,
                         StackID INT NOT NULL,
                         FlashcardID INT NOT NULL,
@@ -29,7 +31,8 @@ namespace Flashcards.Model
                         PercentageCorrect DECIMAL(5,2) NOT NULL,
                         FOREIGN KEY (StackID) REFERENCES Stacks(StackID),
                         FOREIGN KEY (FlashcardID) REFERENCES Flashcards(FlashcardID)
-                    );";
+                        );
+                    END;";
 
                 using (SqlCommand command = new SqlCommand(createTableQuery, connection))
                 {
@@ -70,7 +73,7 @@ namespace Flashcards.Model
                         command.Parameters.AddWithValue("@FlashcardID", FlashcardID);
                         command.Parameters.AddWithValue("@Question", Question);
                         command.Parameters.AddWithValue("@CorrectAnswer", CorrectAnswer);
-                        command.Parameters.AddWithValue("@User Answer", UserAnswer);
+                        command.Parameters.AddWithValue("@UserAnswer", UserAnswer);
                         command.Parameters.AddWithValue("@AnsweredCorrectly", AnsweredCorrectly);
                         command.Parameters.AddWithValue("@SessionStartTime", SessionStartTime);
                         command.Parameters.AddWithValue("@PercentageCorrect", PercentageCorrect);

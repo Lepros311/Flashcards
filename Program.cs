@@ -34,7 +34,7 @@ using (SqlConnection connection = new SqlConnection(connectionString))
     if (DatabaseUtility.CountRows(connectionString!, "Flashcards") == 0)
         flashcardsRepository.SeedFlashcards();
     if (DatabaseUtility.CountRows(connectionString!, "StudySessionStats") == 0)
-        studySessionRepository = new StudySessionRepository(connectionString!);
+        studySessionRepository.SeedStudySessionStats();
 }
 
 string? menuChoice;

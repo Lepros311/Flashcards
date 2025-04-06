@@ -1,4 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
+using Spectre.Console;
+using System.Security.Principal;
 
 namespace Flashcards.Model
 {
@@ -17,13 +19,16 @@ namespace Flashcards.Model
             {
                 connection.Open();
                 string createTableQuery = @"
-                    CREATE TABLE IF NOT EXISTS Flashcards (
-                        FlashcardID INT IDENTITY(1,1) PRIMARY KEY,
-                        StackID INT NOT NULL,
-                        Question TEXT NOT NULL,
-                        Answer TEXT NOT NULL,
-                        FOREIGN KEY (StackID) REFERENCES Stacks(StackID)
-                    );";
+                    IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Flashcards')
+                    BEGIN
+                        CREATE TABLE Flashcards(
+                            FlashcardID INT IDENTITY(1,1) PRIMARY KEY,
+                            StackID INT NOT NULL,
+                            Question TEXT NOT NULL,
+                            Answer TEXT NOT NULL,
+                            FOREIGN KEY (StackID) REFERENCES Stacks(StackID)
+                        );
+                    END;";
 
                 using (SqlCommand command = new SqlCommand(createTableQuery, connection))
                 {

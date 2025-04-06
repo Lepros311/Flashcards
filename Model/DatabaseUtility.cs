@@ -14,14 +14,14 @@ namespace Flashcards.Model
             }
 
             // Optionally, maintain a list of valid table names to check against
-            var validTables = new[] { "Flashcards", "StudySessionStats" }; // Add your valid table names here
+            var validTables = new[] { "Stacks", "Flashcards", "StudySessionStats" }; // Add your valid table names here
             if (!Array.Exists(validTables, t => t.Equals(tableName, StringComparison.OrdinalIgnoreCase)))
             {
                 throw new ArgumentException("Invalid table name.", nameof(tableName));
             }
 
             // Prepare the SQL query
-            string query = $"SELECT COUNT(1) FROM {tableName}";
+            string query = $"SELECT COUNT(1) FROM {tableName};";
 
             using (var connection = new SqlConnection(connectionString))
             {
@@ -43,7 +43,7 @@ namespace Flashcards.Model
             }
 
             // Optionally, maintain a list of valid table names to check against
-            var validTables = new[] { "Flashcards", "StudySessionStats" }; // Add your valid table names here
+            var validTables = new[] { "Stacks", "Flashcards", "StudySessionStats" }; // Add your valid table names here
             if (!Array.Exists(validTables, t => t.Equals(tableName, StringComparison.OrdinalIgnoreCase)))
             {
                 throw new ArgumentException("Invalid table name.", nameof(tableName));

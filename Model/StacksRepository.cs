@@ -17,10 +17,13 @@ namespace Flashcards.Model
             {
                 connection.Open();
                 string createTableQuery = @"
-                    CREATE TABLE IF NOT EXISTS Stacks (
-                        StackID INT IDENTITY(1,1) PRIMARY KEY,
-                        StackName NVARCHAR(100) NOT NULL
-                    );";
+                    IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Stacks')
+                    BEGIN
+                        CREATE TABLE Stacks (
+                            StackID INT IDENTITY(1,1) PRIMARY KEY,
+                            StackName NVARCHAR(100) NOT NULL
+                        );
+                    END;";
 
                 using (SqlCommand command = new SqlCommand(createTableQuery, connection))
                 {
