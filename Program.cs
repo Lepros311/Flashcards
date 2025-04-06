@@ -50,23 +50,41 @@ do
             Thread.Sleep(2000);
             Environment.Exit(0);
             break;
-        //case "View All Records":
-        //    Display.PrintAllRecords("View All Records");
-        //    UI.ReturnToMainMenu();
-        //    break;
-        //case "Add Record":
+        case "Manage Stacks":
+            menuChoice = Display.PrintStacksMenu();
+
+            switch (menuChoice)
+            {
+                case "Return to Main Menu":
+                    break;
+                case "View All Stacks":
+                    Display.PrintAllStacks(connectionString!, "View All Stacks");
+                    UI.ReturnToMainMenu();
+                    break;
+                case "Add Stack":
+                    RecordsController.AddStack();
+                    break;
+                case "Edit Stack":
+                    RecordsController.EditStack();
+                    break;
+                case "Delete Stack":
+                    RecordsController.DeleteStack();
+                    break;
+            }
+            break;
+        //case "Manage Flashcards":
+        //    Display.PrintFlashcardsMenu();
         //    RecordsController.AddRecord();
-        //    UI.ReturnToMainMenu();
         //    break;
-        //case "Edit Record":
+        //case "Study":
         //    RecordsController.EditRecord();
         //    UI.ReturnToMainMenu();
         //    break;
-        //case "Delete Record":
+        //case "View Study Session Data":
         //    RecordsController.DeleteRecord();
         //    UI.ReturnToMainMenu();
         //    break;
-        //case "View Report":
+        //case "View Full Report":
         //    repository = new CodingSessionRepository(connection);
         //    var reportData = repository.GetReportData();
         //    Display.PrintReport(reportData);

@@ -61,5 +61,32 @@ namespace Flashcards.Model
             }
         }
 
+        public List<Stacks> GetAllStacks()
+        {
+            var sessions = new List<Stacks>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                string query = @"SELECT * FROM Stacks ORDER BY StackID DESC";
+
+                using (var command = new SqlCommand(query, connection))
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var session = new Stacks
+                        {
+                            Id = reader.GetInt32(0),
+                            Name = reader.GetString(1),
+                        };
+                        sessions.Add(session);
+                    }
+                }
+            }
+
+            return sessions;
+        }
+
     }
 }
