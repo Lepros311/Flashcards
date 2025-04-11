@@ -2,7 +2,7 @@
 {
     public class Flashcards
     {
-        public int Id { get; set; }
+        public int FlashcardId { get; set; }
 
         public int StackId { get; set; }
 
@@ -12,9 +12,9 @@
 
         public Flashcards() { }
 
-        public Flashcards(int id, int stackId, string? question, string? answer)
+        public Flashcards(int flashcardId, int stackId, string? question, string? answer)
         {
-            Id = id;
+            FlashcardId = flashcardId;
             StackId = stackId;
             Question = question;
             Answer = answer;

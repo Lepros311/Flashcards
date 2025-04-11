@@ -2,26 +2,14 @@
 using Flashcards.Model;
 using Flashcards.View;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 
 Console.Title = "Flashcards";
 
-string currentDirectory = Directory.GetCurrentDirectory();
+var stacksRepository = new StacksRepository(DatabaseUtility.GetConnectionString());
+var flashcardsRepository = new FlashcardsRepository(DatabaseUtility.GetConnectionString());
+var studySessionRepository = new StudySessionRepository(DatabaseUtility.GetConnectionString());
 
-string projectDirectory = Path.Combine(currentDirectory, @"..\..\..");
-
-var configuration = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile($"{projectDirectory}\\app.json", optional: true, reloadOnChange: true)
-    .Build();
-
-string? connectionString = configuration.GetConnectionString("connection");
-
-var stacksRepository = new StacksRepository(connectionString!);
-var flashcardsRepository = new FlashcardsRepository(connectionString!);
-var studySessionRepository = new StudySessionRepository(connectionString!);
-
-using (SqlConnection connection = new SqlConnection(connectionString))
+using (SqlConnection connection = new SqlConnection(DatabaseUtility.GetConnectionString()))
 {
     connection.Open();
 
@@ -29,11 +17,11 @@ using (SqlConnection connection = new SqlConnection(connectionString))
     flashcardsRepository.CreateTable();
     studySessionRepository.CreateTable();
 
-    if (DatabaseUtility.CountRows(connectionString!, "Stacks") == 0)
+    if (DatabaseUtility.CountRows(DatabaseUtility.GetConnectionString(), "Stacks") == 0)
         stacksRepository.SeedStacks();
-    if (DatabaseUtility.CountRows(connectionString!, "Flashcards") == 0)
+    if (DatabaseUtility.CountRows(DatabaseUtility.GetConnectionString(), "Flashcards") == 0)
         flashcardsRepository.SeedFlashcards();
-    if (DatabaseUtility.CountRows(connectionString!, "StudySessionStats") == 0)
+    if (DatabaseUtility.CountRows(DatabaseUtility.GetConnectionString(), "StudySessionStats") == 0)
         studySessionRepository.SeedStudySessionStats();
 }
 
@@ -58,24 +46,50 @@ do
                 case "Return to Main Menu":
                     break;
                 case "View All Stacks":
-                    Display.PrintAllStacks(connectionString!, "View All Stacks");
+                    Display.PrintAllStacks("View All Stacks");
                     UI.ReturnToMainMenu();
                     break;
                 case "Add Stack":
-                    RecordsController.AddStack();
+                    StacksController.AddStack();
+                    UI.ReturnToMainMenu();
                     break;
                 case "Edit Stack":
-                    RecordsController.EditStack();
+                    StacksController.EditStack();
+                    UI.ReturnToMainMenu();
                     break;
                 case "Delete Stack":
-                    RecordsController.DeleteStack();
+                    StacksController.DeleteStack();
+                    UI.ReturnToMainMenu();
                     break;
             }
             break;
-        //case "Manage Flashcards":
-        //    Display.PrintFlashcardsMenu();
-        //    RecordsController.AddRecord();
-        //    break;
+        case "Manage Flashcards":
+            menuChoice = Display.PrintFlashcardsMenu();
+
+            switch (menuChoice)
+            {
+                case "Return to Main Menu":
+                    break;
+                case "View Flashcards":
+                    Display.PrintAllStacks("View All Flashcards");
+                    int stackId = UI.PromptForId("Enter the stack ID of the flashcards you want to view: ", "Stacks");
+                    Display.PrintAllFlashcardsForStack("View All Flashcards", stackId);
+                    UI.ReturnToMainMenu();
+                    break;
+                case "Add Flashcard":
+                    FlashcardsController.AddFlashcard();
+                    UI.ReturnToMainMenu();
+                    break;
+                //case "Edit Flashcard":
+                //    FlashcardsController.EditFlashcard();
+                //    UI.ReturnToMainMenu();
+                //    break;
+                //case "Delete Flashcard"
+                //    FlashcardsController.DeleteFlashcard();
+                //    UI.ReturnToMainMenu();
+                //    break;
+            }
+            break;
         //case "Study":
         //    RecordsController.EditRecord();
         //    UI.ReturnToMainMenu();

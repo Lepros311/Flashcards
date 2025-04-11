@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
 namespace Flashcards.Model
 {
@@ -49,8 +50,16 @@ namespace Flashcards.Model
                 throw new ArgumentException("Invalid table name.", nameof(tableName));
             }
 
+            string query = "";
             // Prepare the SQL query
-            string query = $"SELECT COUNT(1) FROM {tableName} WHERE Id = @Id";
+            if (tableName == "Stacks")
+            {
+                query = $"SELECT COUNT(1) FROM Stacks WHERE StackId = @Id";
+            }
+            if (tableName == "Flashcards")
+            {
+                query = $"SELECT COUNT(1) FROM Flashcards WHERE FlashcardId = @Id";
+            }
 
             using (var connection = new SqlConnection(connectionString))
             {
@@ -61,6 +70,22 @@ namespace Flashcards.Model
                     return (int)command.ExecuteScalar() > 0;
                 }
             }
+        }
+
+        public static string GetConnectionString()
+        {
+            string currentDirectory = Directory.GetCurrentDirectory();
+
+            string projectDirectory = Path.Combine(currentDirectory, @"..\..\..");
+
+            var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile($"{projectDirectory}\\app.json", optional: true, reloadOnChange: true)
+            .Build();
+
+            string? connectionString = configuration.GetConnectionString("connection");
+
+            return connectionString;
         }
     }
 }

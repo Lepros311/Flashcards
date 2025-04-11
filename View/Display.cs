@@ -49,17 +49,15 @@ namespace Flashcards.View
                 .PageSize(10)
                 .AddChoices(new[]
                 {
-                    "Return to Main Menu", "View All Flashcards", "Add Flashcard", "Edit Flashcard", "Delete Flashcard"
+                    "Return to Main Menu", "View Flashcards", "Add Flashcard", "Edit Flashcard", "Delete Flashcard"
                 }));
 
             return menuChoice;
         }
 
-        public static void PrintAllStacks(string connectionString, string heading)
+        public static void PrintAllStacks(string heading)
         {
-            Console.WriteLine("PrintAllStacks.");
-
-            var repository = new StacksRepository(connectionString);
+            var repository = new StacksRepository(DatabaseUtility.GetConnectionString());
             var stacks = repository.GetAllStacks();
 
             Console.Clear();
@@ -87,6 +85,46 @@ namespace Flashcards.View
                 );
             }
 
+            AnsiConsole.Write(table);
+        }
+
+        public static void PrintAllFlashcardsForStack(string heading, int stackId)
+        {
+            var repository = new FlashcardsRepository(DatabaseUtility.GetConnectionString());
+            var flashcards = repository.GetAllFlashcardsForStack(stackId);
+
+            string stackName = "";
+
+            Console.Clear();
+
+            var rule = new Rule($"[green]{heading}[/]");
+            rule.Justification = Justify.Left;
+            AnsiConsole.Write(rule);
+
+            var table = new Table()
+                .Border(TableBorder.Rounded)
+                .AddColumn(new TableColumn("[dodgerblue1]ID[/]").Centered())
+                .AddColumn(new TableColumn("[dodgerblue1]Question[/]").Centered())
+                .AddColumn(new TableColumn("[dodgerblue1]Answer[/]").Centered());
+
+            if (flashcards.Count == 0)
+            {
+                AnsiConsole.MarkupLine("[red]No records found.[/]");
+                return;
+            }
+
+            foreach (var flashcard in flashcards)
+            {
+                table.AddRow(
+                    flashcard.FlashcardId.ToString(),
+                    flashcard.Question!,
+                    flashcard.Answer!
+                );
+            }
+
+            Console.WriteLine();
+            AnsiConsole.Write(new Markup($" [dodgerblue1]Stack:[/] [white]Vocab{stackName}[/]"));
+            Console.WriteLine();
             AnsiConsole.Write(table);
         }
     }

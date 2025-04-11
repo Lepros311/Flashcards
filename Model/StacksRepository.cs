@@ -20,7 +20,7 @@ namespace Flashcards.Model
                     IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Stacks')
                     BEGIN
                         CREATE TABLE Stacks (
-                            StackID INT IDENTITY(1,1) PRIMARY KEY,
+                            StackId INT IDENTITY(1,1) PRIMARY KEY,
                             StackName NVARCHAR(100) NOT NULL
                         );
                     END;";
@@ -54,8 +54,8 @@ namespace Flashcards.Model
                     using (SqlCommand command = new SqlCommand(insertStacksQuery, connection))
                     {
                         command.Parameters.AddWithValue("@StackName", stackName);
-                        var stackId = command.ExecuteScalar();
-                        Console.WriteLine($"Inserted Stack: {stackName} with ID: {stackId}");
+                        var id = command.ExecuteScalar();
+                        Console.WriteLine($"Inserted Stack: {stackName} with ID: {id}");
                     }
                 }
             }
@@ -63,29 +63,29 @@ namespace Flashcards.Model
 
         public List<Stacks> GetAllStacks()
         {
-            var sessions = new List<Stacks>();
+            var stacks = new List<Stacks>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                string query = @"SELECT * FROM Stacks ORDER BY StackID DESC";
+                string query = @"SELECT * FROM Stacks ORDER BY StackId DESC";
 
                 using (var command = new SqlCommand(query, connection))
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        var session = new Stacks
+                        var stack = new Stacks
                         {
                             Id = reader.GetInt32(0),
                             Name = reader.GetString(1),
                         };
-                        sessions.Add(session);
+                        stacks.Add(stack);
                     }
                 }
             }
 
-            return sessions;
+            return stacks;
         }
 
     }
