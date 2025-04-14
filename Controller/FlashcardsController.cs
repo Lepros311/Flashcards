@@ -66,5 +66,82 @@ namespace Flashcards.Controller
                 }
             }
         }
+
+        public static void EditFlashcard()
+        {
+            Display.PrintAllStacks("Edit Flashcard");
+
+            int stackId = UI.PromptForId("Enter the ID of the flashcard's stack: ", "Stacks");
+
+            Display.PrintAllFlashcardsForStack("Edit Flashcard", stackId);
+
+            int flashcardId = UI.PromptForId("Enter the ID of the flashcard you want to edit: ", "Flashcards");
+
+            string? currentQuestion = null;
+            string? currentAnswer = null;
+
+            using (var connection = new SqlConnection(DatabaseUtility.GetConnectionString()))
+            {
+                connection.Open();
+
+                string flashcardQuery = "SELECT * FROM Flashcards WHERE flashcardId = @flashcardId";
+
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = flashcardQuery;
+                    command.Parameters.AddWithValue("@flashcardId", flashcardId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            currentQuestion = reader["Question"].ToString();
+                            currentAnswer = reader["Answer"].ToString();
+                        }
+                    }
+                }
+
+                Console.WriteLine($"\nSelected flashcard ID: {flashcardId}");
+                Console.WriteLine($"Question: {currentQuestion}");
+                Console.WriteLine($"Answer: {currentAnswer}");
+
+                string newQuestion = UI.PromptForAlphaNumericInput($"\nEnter new question (leave blank to keep current): ", true);
+
+                if (string.IsNullOrEmpty(newQuestion))
+                {
+                    newQuestion = currentQuestion!;
+                }
+
+                string newAnswer = UI.PromptForAlphaNumericInput($"\nEnter new answer (leave blank to keep current): ", true);
+
+                if (string.IsNullOrEmpty(newAnswer))
+                {
+                    newAnswer = currentAnswer!;
+                }
+
+                if (newQuestion == currentQuestion && newAnswer == currentAnswer)
+                {
+                    Console.WriteLine("\nNo changes were made.");
+                    return;
+                }
+
+                string updateFlashcardQuery = "UPDATE Flashcards SET Question = @newQuestion, Answer = @newAnswer WHERE FlashcardId = @flashcardId";
+
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = updateFlashcardQuery;
+                    command.Parameters.AddWithValue("@flashcardId", flashcardId);
+                    command.Parameters.AddWithValue("@newQuestion", newQuestion);
+                    command.Parameters.AddWithValue("@newAnswer", newAnswer);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+                    if (rowsAffected > 0)
+                    {
+                        Display.PrintAllFlashcardsForStack("Edit Flashcard", stackId);
+                        Console.WriteLine("\nFlashcard updated successfully!");
+                    }
+                }
+            }
+        }
     }
 }

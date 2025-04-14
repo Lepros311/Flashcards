@@ -93,7 +93,28 @@ namespace Flashcards.View
             var repository = new FlashcardsRepository(DatabaseUtility.GetConnectionString());
             var flashcards = repository.GetAllFlashcardsForStack(stackId);
 
-            string stackName = "";
+            string? stackName = null;
+
+            using (var connection = new SqlConnection(DatabaseUtility.GetConnectionString()))
+            {
+                connection.Open();
+
+                string stackQuery = "SELECT StackName FROM Stacks WHERE StackId = @stackId";
+
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = stackQuery;
+                    command.Parameters.AddWithValue("@stackId", stackId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            stackName = reader["StackName"].ToString();
+                        }
+                    }
+                }
+            }
 
             Console.Clear();
 
@@ -123,7 +144,7 @@ namespace Flashcards.View
             }
 
             Console.WriteLine();
-            AnsiConsole.Write(new Markup($" [dodgerblue1]Stack:[/] [white]Vocab{stackName}[/]"));
+            AnsiConsole.Write(new Markup($" [dodgerblue1]Stack:[/] [white]{stackName}[/]"));
             Console.WriteLine();
             AnsiConsole.Write(table);
         }
