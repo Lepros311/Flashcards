@@ -84,10 +84,10 @@ do
                     FlashcardsController.EditFlashcard();
                     UI.ReturnToMainMenu();
                     break;
-                    //case "Delete Flashcard"
-                    //    FlashcardsController.DeleteFlashcard();
-                    //    UI.ReturnToMainMenu();
-                    //    break;
+                case "Delete Flashcard":
+                        FlashcardsController.DeleteFlashcard();
+                    UI.ReturnToMainMenu();
+                    break;
             }
             break;
         //case "Study":

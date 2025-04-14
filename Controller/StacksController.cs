@@ -108,7 +108,7 @@ namespace Flashcards.Controller
 
             int stackId = UI.PromptForId("Enter the ID of the stack you want to delete: ", "Stacks");
 
-            if (UI.PromptForDeleteConfirmation(stackId) == "n")
+            if (UI.PromptForDeleteConfirmation(stackId, "stack") == "n")
             {
                 return;
             }

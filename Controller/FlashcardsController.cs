@@ -143,5 +143,48 @@ namespace Flashcards.Controller
                 }
             }
         }
+
+        public static void DeleteFlashcard()
+        {
+            Display.PrintAllStacks("Delete Flashcard");
+
+            int stackId = UI.PromptForId("Enter the ID of the flashcard's stack: ", "Stacks");
+
+            Display.PrintAllFlashcardsForStack("Delete Flashcard", stackId);
+
+            int flashcardId = UI.PromptForId("Enter the ID of the flashcard you want to delete: ", "Flashcards");
+
+            if (UI.PromptForDeleteConfirmation(flashcardId, "flashcard") == "n")
+            {
+                return;
+            }
+
+            using (var connection = new SqlConnection(DatabaseUtility.GetConnectionString()))
+            {
+                connection.Open();
+
+                string deleteQuery = @"
+                    DELETE FROM Flashcards
+                    WHERE FlashcardId = @flashcardId";
+
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = deleteQuery;
+                    command.Parameters.AddWithValue("@flashcardId", flashcardId);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+                    if (rowsAffected > 0)
+                    {
+                        Display.PrintAllFlashcardsForStack("Delete Flashcard", stackId);
+                        Console.WriteLine("\nFlashcard deleted successfully!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nNo flashcard found with that ID. Deletion failed.");
+                    }
+                }
+            }
+
+        }
     }
 }
