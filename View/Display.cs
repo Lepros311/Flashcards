@@ -148,6 +148,43 @@ namespace Flashcards.View
             Console.WriteLine();
             AnsiConsole.Write(table);
         }
+
+        public static void PrintAllStudySessionData(string heading)
+        {
+            var sessionRepo = new StudySessionRepository(DatabaseUtility.GetConnectionString());
+            var sessions = sessionRepo.GetAllStudySessions();
+
+            Console.Clear();
+
+            var rule = new Rule($"[green]{heading}[/]");
+            rule.Justification = Justify.Left;
+            AnsiConsole.Write(rule);
+
+            var table = new Table()
+                .Border(TableBorder.Rounded)
+                .AddColumn(new TableColumn("[dodgerblue1]ID[/]").Centered())
+                .AddColumn(new TableColumn("[dodgerblue1]Stack ID[/]").Centered())
+                .AddColumn(new TableColumn("[dodgerblue1]Session Start Time[/]").Centered())
+                .AddColumn(new TableColumn("[dodgerblue1]Percentage Correct[/]").Centered());
+
+            if (sessions.Count == 0)
+            {
+                AnsiConsole.MarkupLine("[red]No records found.[/]");
+                return;
+            }
+
+            foreach (var session in sessions)
+            {
+                table.AddRow(
+                    session.Id.ToString(),
+                    session.StackId.ToString(),
+                    session.SessionStartTime.ToString("MMMM dd, yyyy h:mm tt"),
+                    session.PercentageCorrect.ToString()
+                );
+            }
+
+            AnsiConsole.Write(table);
+        }
     }
 
 

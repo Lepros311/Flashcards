@@ -94,10 +94,10 @@ do
             StudySessionController.Study();
             UI.ReturnToMainMenu();
             break;
-        //case "View Study Session Data":
-        //    RecordsController.DeleteRecord();
-        //    UI.ReturnToMainMenu();
-        //    break;
+        case "View Study Session Data":
+            Display.PrintAllStudySessionData("View Study Sessions");
+            UI.ReturnToMainMenu();
+            break;
         //case "View Full Report":
         //    repository = new CodingSessionRepository(connection);
         //    var reportData = repository.GetReportData();

@@ -30,6 +30,37 @@ namespace Flashcards.Model
             }
         }
 
+        public List<StudySession> GetAllStudySessions()
+        {
+            var sessions = new List<StudySession>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                string query = @"SELECT * FROM StudySessionStats ORDER BY SessionStartTime DESC";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                   using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var session = new StudySession
+                            {
+                                Id = reader.GetInt32(0),
+                                StackId = reader.GetInt32(1),
+                                SessionStartTime = reader.GetDateTime(2),
+                                PercentageCorrect = reader.GetDecimal(3)
+                            };
+                            sessions.Add(session);
+                        }
+                    }
+                }
+            }
+
+            return sessions;
+        }
+
         public void CreateTable()
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))

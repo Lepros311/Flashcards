@@ -24,10 +24,11 @@ namespace Flashcards.Controller
 
             List<int> shownIndices = new List<int>();
 
-            Console.WriteLine("Studying Flashcards:");
-
             for (int i = 0; i < numberOfFlashcardsToStudy; i++)
             {
+                Console.Clear();
+                Console.WriteLine("Studying...");
+
                 int randomIndex;
 
                 do
@@ -37,23 +38,29 @@ namespace Flashcards.Controller
 
                 Flashcard flashcard = flashcards[randomIndex];
 
-                Console.WriteLine($"{flashcard.Question}");
+                Console.WriteLine($"\n\t{flashcard.Question}\n");
 
-                Console.WriteLine("User Ansewr:");
+                Console.Write("Your Answer: ");
 
                 string? userAnswer = Console.ReadLine();
 
                 if (userAnswer.Equals(flashcard.Answer, StringComparison.OrdinalIgnoreCase))
                 {
-                    Console.WriteLine("Correct!");
+                    Console.WriteLine("\n\tCorrect!");
                     correctAnswers++;
                 }
                 else
                 {
-                    Console.WriteLine($"Incorrect! The correct answer is: {flashcard.Answer}");
+                    Console.WriteLine($"\n\tIncorrect! The correct answer is: {flashcard.Answer}");
                 }
 
                 shownIndices.Add(randomIndex);
+
+                if (i < numberOfFlashcardsToStudy - 1)
+                {
+                    Console.WriteLine("\nPress any key to continue to the next flashcard...");
+                    Console.ReadKey();
+                }
             }
 
             decimal percentageCorrect = (decimal)correctAnswers / numberOfFlashcardsToStudy * 100;
