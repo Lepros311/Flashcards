@@ -1,6 +1,6 @@
 ﻿namespace Flashcards.Model
 {
-    public class Flashcards
+    public class Flashcard
     {
         public int FlashcardId { get; set; }
 
@@ -10,9 +10,9 @@
 
         public string? Answer { get; set; }
 
-        public Flashcards() { }
+        public Flashcard() { }
 
-        public Flashcards(int flashcardId, int stackId, string? question, string? answer)
+        public Flashcard(int flashcardId, int stackId, string? question, string? answer)
         {
             FlashcardId = flashcardId;
             StackId = stackId;

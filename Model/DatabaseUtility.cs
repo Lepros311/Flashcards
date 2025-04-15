@@ -5,26 +5,22 @@ namespace Flashcards.Model
 {
     public static class DatabaseUtility
     {
-        // Method to count rows in a specified table
-        public static int CountRows(string connectionString, string tableName)
+        public static int CountRows(string tableName)
         {
-            // Validate the table name to prevent SQL injection
             if (string.IsNullOrWhiteSpace(tableName))
             {
                 throw new ArgumentException("Table name cannot be null or empty.", nameof(tableName));
             }
 
-            // Optionally, maintain a list of valid table names to check against
-            var validTables = new[] { "Stacks", "Flashcards", "StudySessionStats" }; // Add your valid table names here
+            var validTables = new[] { "Stacks", "Flashcards", "StudySessionStats" }; 
             if (!Array.Exists(validTables, t => t.Equals(tableName, StringComparison.OrdinalIgnoreCase)))
             {
                 throw new ArgumentException("Invalid table name.", nameof(tableName));
             }
 
-            // Prepare the SQL query
             string query = $"SELECT COUNT(1) FROM {tableName};";
 
-            using (var connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(GetConnectionString()))
             {
                 using (var command = new SqlCommand(query, connection))
                 {
@@ -34,24 +30,20 @@ namespace Flashcards.Model
             }
         }
 
-        // Method to check if a row with a specific ID exists in a specified table
         public static bool CheckIfIdExists(string connectionString, string tableName, int id)
         {
-            // Validate the table name to prevent SQL injection
             if (string.IsNullOrWhiteSpace(tableName))
             {
                 throw new ArgumentException("Table name cannot be null or empty.", nameof(tableName));
             }
 
-            // Optionally, maintain a list of valid table names to check against
-            var validTables = new[] { "Stacks", "Flashcards", "StudySessionStats" }; // Add your valid table names here
+            var validTables = new[] { "Stacks", "Flashcards", "StudySessionStats" };  
             if (!Array.Exists(validTables, t => t.Equals(tableName, StringComparison.OrdinalIgnoreCase)))
             {
                 throw new ArgumentException("Invalid table name.", nameof(tableName));
             }
 
             string query = "";
-            // Prepare the SQL query
             if (tableName == "Stacks")
             {
                 query = $"SELECT COUNT(1) FROM Stacks WHERE StackId = @Id";

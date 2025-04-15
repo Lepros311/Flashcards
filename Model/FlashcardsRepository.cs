@@ -74,9 +74,9 @@ namespace Flashcards.Model
             }
         }
 
-        public List<Flashcards> GetAllFlashcardsForStack(int stackId)
+        public List<Flashcard> GetAllFlashcardsForStack(int stackId)
         {
-            var flashcards = new List<Flashcards>();
+            var flashcards = new List<Flashcard>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -91,7 +91,7 @@ namespace Flashcards.Model
                     {
                         while (reader.Read())
                         {
-                            var flashcard = new Flashcards
+                            var flashcard = new Flashcard
                             {
                                 FlashcardId = reader.GetInt32(0),
                                 StackId = reader.GetInt32(1),

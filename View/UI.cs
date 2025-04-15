@@ -70,6 +70,40 @@ namespace Flashcards.View
             return Convert.ToInt32(input);
         }
 
+        public static int PromptForNumberOfFlashcards(string message, int stackId)
+        {
+            string? input;
+            int numberOfFlashcardsToStudy;
+            bool isValidInput = false;
+            var flashcardsRepo = new FlashcardsRepository(DatabaseUtility.GetConnectionString());
+            int numberOfFlashcardsInStack = flashcardsRepo.GetAllFlashcardsForStack(stackId).Count;
+            do
+            {
+                Console.Write(message);
+                input = Console.ReadLine();
+                if (Validation.ValidateNumericInput(input!) == false)
+                {
+                    Console.WriteLine("Invalid input.");
+                }
+                else if (Validation.ValidateNumericInput(input!) == true)
+                {
+                    numberOfFlashcardsToStudy = Convert.ToInt32(input);
+
+                    if (numberOfFlashcardsInStack < numberOfFlashcardsToStudy)
+                    {
+                        Console.WriteLine($"This stack only has {numberOfFlashcardsInStack} flashcards.");
+                    }
+                    else
+                    {
+                        isValidInput = true;
+                    }
+                }
+  
+            } while (isValidInput == false);
+
+            return Convert.ToInt32(input);
+        }
+
         public static string PromptForDeleteConfirmation(int recordId, string recordType)
         {
             string? confirmation;

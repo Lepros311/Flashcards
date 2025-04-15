@@ -11,6 +11,25 @@ namespace Flashcards.Model
             _connectionString = connectionString;
         }
 
+        public void SaveStudySessionStats(StudySession session)
+        {
+            using (SqlConnection connection = new SqlConnection(DatabaseUtility.GetConnectionString()))
+            {
+                connection.Open();
+
+                string query = @"INSERT INTO StudySessionStats (StackId, SessionStartTime, PercentageCorrect) VALUES (@StackID, @SessionStartTime, @PercentageCorrect)";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.Add(new SqlParameter("@StackID", session.StackId));
+                    command.Parameters.Add(new SqlParameter("@SessionStartTime", session.SessionStartTime));
+                    command.Parameters.Add(new SqlParameter("@PercentageCorrect", session.PercentageCorrect));
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
         public void CreateTable()
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -22,15 +41,9 @@ namespace Flashcards.Model
                         CREATE TABLE StudySessionStats (
                         SessionID INT IDENTITY(1,1) PRIMARY KEY,
                         StackID INT NOT NULL,
-                        FlashcardID INT NOT NULL,
-                        Question NVARCHAR(MAX) NOT NULL,
-                        CorrectAnswer NVARCHAR(MAX) NOT NULL,
-                        UserAnswer NVARCHAR(MAX) NOT NULL,
-                        AnsweredCorrectly BIT NOT NULL,
                         SessionStartTime DATETIME NOT NULL,
                         PercentageCorrect DECIMAL(5,2) NOT NULL,
-                        FOREIGN KEY (StackID) REFERENCES Stacks(StackID),
-                        FOREIGN KEY (FlashcardID) REFERENCES Flashcards(FlashcardID)
+                        FOREIGN KEY (StackID) REFERENCES Stacks(StackID) ON DELETE CASCADE
                         );
                     END;";
 

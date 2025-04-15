@@ -17,11 +17,11 @@ using (SqlConnection connection = new SqlConnection(DatabaseUtility.GetConnectio
     flashcardsRepository.CreateTable();
     studySessionRepository.CreateTable();
 
-    if (DatabaseUtility.CountRows(DatabaseUtility.GetConnectionString(), "Stacks") == 0)
+    if (DatabaseUtility.CountRows("Stacks") == 0)
         stacksRepository.SeedStacks();
-    if (DatabaseUtility.CountRows(DatabaseUtility.GetConnectionString(), "Flashcards") == 0)
+    if (DatabaseUtility.CountRows("Flashcards") == 0)
         flashcardsRepository.SeedFlashcards();
-    if (DatabaseUtility.CountRows(DatabaseUtility.GetConnectionString(), "StudySessionStats") == 0)
+    if (DatabaseUtility.CountRows("StudySessionStats") == 0)
         studySessionRepository.SeedStudySessionStats();
 }
 
@@ -90,10 +90,10 @@ do
                     break;
             }
             break;
-        //case "Study":
-        //    RecordsController.EditRecord();
-        //    UI.ReturnToMainMenu();
-        //    break;
+        case "Study":
+            StudySessionController.Study();
+            UI.ReturnToMainMenu();
+            break;
         //case "View Study Session Data":
         //    RecordsController.DeleteRecord();
         //    UI.ReturnToMainMenu();
