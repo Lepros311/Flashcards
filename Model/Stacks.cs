@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         public Stacks() { }
 
@@ -12,6 +12,11 @@
         {
             Id = id; 
             Name = name;
+        }
+
+        public override string ToString()
+        {
+            return $"{Id}: {Name}";
         }
     }
 }

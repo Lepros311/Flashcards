@@ -55,6 +55,40 @@ namespace Flashcards.View
             return menuChoice;
         }
 
+        public static Stacks PrintStackSelectionMenu(string heading, string title)
+        {
+            Console.Clear();
+
+            var repository = new StacksRepository(DatabaseUtility.GetConnectionString());
+            var stacks = repository.GetAllStacks();
+
+            if (stacks == null || stacks.Count == 0)
+            {
+                AnsiConsole.MarkupLine("[red]No stacks available.[/]");
+                return null;
+            }
+
+            var displayOptions = stacks.Select((stack, index) => new
+            {
+                DisplayText = $"{index + 1}: {stack.Name}",
+                Stack = stack
+            }).ToList();
+
+            var rule = new Rule($"[green]{heading}[/]");
+            rule.Justification = Justify.Left;
+            AnsiConsole.Write(rule);
+
+            var selectedOption = AnsiConsole.Prompt(
+                new SelectionPrompt<dynamic>()
+                .Title($"\n{title}")
+                .PageSize(10)
+                .AddChoices(displayOptions.Select(option => option.DisplayText).ToArray()));
+
+            var selectedStack = displayOptions.First(option => option.DisplayText.StartsWith(selectedOption.Split(':')[0]));
+
+            return selectedStack.Stack;
+        }
+
         public static void PrintAllStacks(string heading)
         {
             var repository = new StacksRepository(DatabaseUtility.GetConnectionString());
@@ -71,18 +105,24 @@ namespace Flashcards.View
                 .AddColumn(new TableColumn("[dodgerblue1]ID[/]").Centered())
                 .AddColumn(new TableColumn("[dodgerblue1]Stack Name[/]").Centered());
 
-            if (stacks.Count == 0)
+            if (stacks == null || stacks.Count == 0)
             {
                 AnsiConsole.MarkupLine("[red]No records found.[/]");
                 return;
             }
 
-            foreach (var stack in stacks)
+            var sortedStacks = stacks.OrderBy(stack => stack.Id).ToList();
+
+            int displayId = 1;
+
+            foreach (var stack in sortedStacks)
             {
-                table.AddRow(
-                    stack.Id.ToString(),
-                    stack.Name!
-                );
+                //table.AddRow(
+                //    stack.Id.ToString(),
+                //    stack.Name!
+                //);
+                table.AddRow(displayId.ToString(), stack.Name);
+                displayId++;
             }
 
             AnsiConsole.Write(table);
@@ -163,7 +203,7 @@ namespace Flashcards.View
             var table = new Table()
                 .Border(TableBorder.Rounded)
                 .AddColumn(new TableColumn("[dodgerblue1]ID[/]").Centered())
-                .AddColumn(new TableColumn("[dodgerblue1]Stack ID[/]").Centered())
+                .AddColumn(new TableColumn("[dodgerblue1]Stack Name[/]").Centered())
                 .AddColumn(new TableColumn("[dodgerblue1]Session Start Time[/]").Centered())
                 .AddColumn(new TableColumn("[dodgerblue1]Percentage Correct[/]").Centered());
 
@@ -177,9 +217,9 @@ namespace Flashcards.View
             {
                 table.AddRow(
                     session.Id.ToString(),
-                    session.StackId.ToString(),
+                    session.StackName.ToString(),
                     session.SessionStartTime.ToString("MMMM dd, yyyy h:mm tt"),
-                    session.PercentageCorrect.ToString()
+                    session.PercentageCorrect.ToString("0") + "%"
                 );
             }
 

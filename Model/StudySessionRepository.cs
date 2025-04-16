@@ -37,11 +37,15 @@ namespace Flashcards.Model
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                string query = @"SELECT * FROM StudySessionStats ORDER BY SessionStartTime DESC";
+                string query = @"
+                    SELECT ss.SessionID, ss.StackID, ss.SessionStartTime, ss.PercentageCorrect, s.StackName 
+                    FROM StudySessionStats ss 
+                    JOIN Stacks s ON ss.StackID = s.StackID
+                    ORDER BY SessionStartTime DESC";
 
                 using (var command = new SqlCommand(query, connection))
                 {
-                   using (var reader = command.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
@@ -50,7 +54,8 @@ namespace Flashcards.Model
                                 Id = reader.GetInt32(0),
                                 StackId = reader.GetInt32(1),
                                 SessionStartTime = reader.GetDateTime(2),
-                                PercentageCorrect = reader.GetDecimal(3)
+                                PercentageCorrect = reader.GetDecimal(3),
+                                StackName = reader.GetString(4)
                             };
                             sessions.Add(session);
                         }
@@ -83,7 +88,6 @@ namespace Flashcards.Model
                     try
                     {
                         command.ExecuteNonQuery();
-                        Console.WriteLine("StudySessionStats table created successfully.");
                     }
                     catch (SqlException ex)
                     {

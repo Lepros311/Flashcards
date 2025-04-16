@@ -30,7 +30,6 @@ namespace Flashcards.Model
                     try
                     {
                         command.ExecuteNonQuery();
-                        Console.WriteLine("Stacks table created successfully.");
                     }
                     catch (SqlException ex)
                     {

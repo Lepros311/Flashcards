@@ -36,7 +36,6 @@ namespace Flashcards.Model
                     try
                     {
                         command.ExecuteNonQuery();
-                        Console.WriteLine("Flashcards table created successfully.");
                     }
                     catch (SqlException ex)
                     {
