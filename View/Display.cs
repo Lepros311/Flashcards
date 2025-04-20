@@ -92,6 +92,43 @@ namespace Flashcards.View
             return (selectedStack.Stack, selectedStack.Index);
         }
 
+        public static (Flashcard Flashcard, int Index) PrintFlashcardSelectionMenu(string heading, string title, int stackId)
+        {
+            Console.Clear();
+
+            var repository = new FlashcardsRepository(DatabaseUtility.GetConnectionString());
+            var flashcards = repository.GetAllFlashcardsForStack(stackId);
+
+            if (flashcards == null || flashcards.Count == 0)
+            {
+                AnsiConsole.MarkupLine("[red]No flashcards available.[/]");
+                return (null, -1);
+            }
+
+            var sortedFlashcards = flashcards.OrderBy(flashcard => flashcard.FlashcardId).ToList();
+
+            var displayOptions = sortedFlashcards.Select((flashcard, index) => new
+            {
+                DisplayText = $"{index + 1}: [[Question]] {flashcard.Question} [[Answer]] {flashcard.Answer}",
+                Flashcard = flashcard,
+                Index = index
+            }).ToList();
+
+            var rule = new Rule($"[green]{heading}[/]");
+            rule.Justification = Justify.Left;
+            AnsiConsole.Write(rule);
+
+            var selectedOption = AnsiConsole.Prompt(
+                new SelectionPrompt<dynamic>()
+                .Title($"\n{title}")
+                .PageSize(10)
+                .AddChoices(displayOptions.Select(option => option.DisplayText).ToArray()));
+
+            var selectedFlashcard = displayOptions.First(option => option.DisplayText.StartsWith(selectedOption.Split(':')[0]));
+
+            return (selectedFlashcard.Flashcard, selectedFlashcard.Index);
+        }
+
         public static void PrintAllStacks(string heading)
         {
             var repository = new StacksRepository(DatabaseUtility.GetConnectionString());
@@ -173,13 +210,18 @@ namespace Flashcards.View
                 return;
             }
 
-            foreach (var flashcard in flashcards)
+            var sortedFlashcards = flashcards.OrderBy(flashcard => flashcard.FlashcardId).ToList();
+
+            int indexPlusOne = 1;
+
+            foreach (var flashcard in sortedFlashcards)
             {
                 table.AddRow(
-                    flashcard.FlashcardId.ToString(),
+                    indexPlusOne.ToString(),
                     flashcard.Question!,
                     flashcard.Answer!
                 );
+                indexPlusOne++;
             }
 
             Console.WriteLine();

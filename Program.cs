@@ -71,9 +71,16 @@ do
                 case "Return to Main Menu":
                     break;
                 case "View Flashcards":
-                    Display.PrintAllStacks("View All Flashcards");
-                    int stackId = UI.PromptForId("Enter the stack ID of the flashcards you want to view: ", "Stacks");
-                    Display.PrintAllFlashcardsForStack("View All Flashcards", stackId);
+                    //Display.PrintAllStacks("View Flashcards");
+                    //int stackId = UI.PromptForId("Enter the stack ID of the flashcards you want to view: ", "Stacks");
+                    //Display.PrintAllFlashcardsForStack("View All Flashcards", stackId);
+                    var (stack, stackIndex) = Display.PrintStackSelectionMenu("View Flashcards", "Select the stack of the flashcards you want to view...");
+
+                    int stackId = stack.Id;
+
+                    int stackIndexPlusOne = stackIndex + 1;
+                    Display.PrintAllFlashcardsForStack("View Flashcards", stackId);
+
                     UI.ReturnToMainMenu();
                     break;
                 case "Add Flashcard":

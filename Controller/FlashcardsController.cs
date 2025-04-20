@@ -8,9 +8,16 @@ namespace Flashcards.Controller
     {
         public static void AddFlashcard()
         {
-            Display.PrintAllStacks("Add Flashcard");
+            //Display.PrintAllStacks("Add Flashcard");
 
-            int stackId = UI.PromptForId("Enter the ID of the stack you want to add a flashcard to: ", "Stacks");
+            //int stackId = UI.PromptForId("Enter the ID of the stack you want to add a flashcard to: ", "Stacks");
+
+            var (stack, index) = Display.PrintStackSelectionMenu("Add Flashcard", "Select the stack you want to add a flashcard to...");
+
+            int stackId = stack.Id;
+
+            int indexPlusOne = index + 1;
+
             string? stackName = null;
 
             using (var connection = new SqlConnection(DatabaseUtility.GetConnectionString()))
@@ -35,7 +42,9 @@ namespace Flashcards.Controller
 
             }
 
-            string question = UI.PromptForAlphaNumericInput("Enter the flashcard's question: ");
+            Display.PrintAllFlashcardsForStack("Add Flashcard", stackId);
+
+            string question = UI.PromptForAlphaNumericInput("\nEnter the flashcard's question: ");
             string answer = UI.PromptForAlphaNumericInput("Enter the flashcard's answer: ");
 
             using (var connection = new SqlConnection(DatabaseUtility.GetConnectionString()))
@@ -69,13 +78,25 @@ namespace Flashcards.Controller
 
         public static void EditFlashcard()
         {
-            Display.PrintAllStacks("Edit Flashcard");
+            //Display.PrintAllStacks("Edit Flashcard");
 
-            int stackId = UI.PromptForId("Enter the ID of the flashcard's stack: ", "Stacks");
+            //int stackId = UI.PromptForId("Enter the ID of the flashcard's stack: ", "Stacks");
 
-            Display.PrintAllFlashcardsForStack("Edit Flashcard", stackId);
+            var (stack, stackIndex) = Display.PrintStackSelectionMenu("Edit Flashcard", "Select the stack of the flashcard you want to edit...");
 
-            int flashcardId = UI.PromptForId("Enter the ID of the flashcard you want to edit: ", "Flashcards");
+            int stackId = stack.Id;
+
+            int stackIndexPlusOne = stackIndex + 1;
+
+            //Display.PrintAllFlashcardsForStack("Edit Flashcard", stackId);
+
+            //int flashcardId = UI.PromptForId("Enter the ID of the flashcard you want to edit: ", "Flashcards");
+
+            var (flashcard, flashcardIndex) = Display.PrintFlashcardSelectionMenu("Edit Flashcard", "Select the flashcard you want to edit...", stackId);
+
+            int flashcardId = flashcard.FlashcardId;
+
+            int flashcardIndexPlusOne = flashcardIndex + 1;
 
             string? currentQuestion = null;
             string? currentAnswer = null;
@@ -101,7 +122,7 @@ namespace Flashcards.Controller
                     }
                 }
 
-                Console.WriteLine($"\nSelected flashcard ID: {flashcardId}");
+                Console.WriteLine($"\nSelected flashcard ID: {flashcardIndexPlusOne}");
                 Console.WriteLine($"Question: {currentQuestion}");
                 Console.WriteLine($"Answer: {currentAnswer}");
 
@@ -146,15 +167,29 @@ namespace Flashcards.Controller
 
         public static void DeleteFlashcard()
         {
-            Display.PrintAllStacks("Delete Flashcard");
+            //Display.PrintAllStacks("Delete Flashcard");
 
-            int stackId = UI.PromptForId("Enter the ID of the flashcard's stack: ", "Stacks");
+            //int stackId = UI.PromptForId("Enter the ID of the flashcard's stack: ", "Stacks");
+
+            var (stack, stackIndex) = Display.PrintStackSelectionMenu("Delete Flashcard", "Select the stack of the flashcard you want to delete...");
+
+            int stackId = stack.Id;
+
+            int stackIndexPlusOne = stackIndex + 1;
+
+            //Display.PrintAllFlashcardsForStack("Delete Flashcard", stackId);
+
+            //int flashcardId = UI.PromptForId("Enter the ID of the flashcard you want to delete: ", "Flashcards");
+
+            var (flashcard, flashcardIndex) = Display.PrintFlashcardSelectionMenu("Delete Flashcard", "Select the flashcard you want to delete...", stackId);
+
+            int flashcardId = flashcard.FlashcardId;
+
+            int flashcardIndexPlusOne = flashcardIndex + 1;
 
             Display.PrintAllFlashcardsForStack("Delete Flashcard", stackId);
 
-            int flashcardId = UI.PromptForId("Enter the ID of the flashcard you want to delete: ", "Flashcards");
-
-            if (UI.PromptForDeleteConfirmation(flashcardId, "flashcard") == "n")
+            if (UI.PromptForDeleteConfirmation(flashcardIndexPlusOne, "flashcard") == "n")
             {
                 return;
             }
