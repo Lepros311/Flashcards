@@ -55,7 +55,7 @@ namespace Flashcards.View
             return menuChoice;
         }
 
-        public static Stacks PrintStackSelectionMenu(string heading, string title)
+        public static (Stacks Stack, int Index) PrintStackSelectionMenu(string heading, string title)
         {
             Console.Clear();
 
@@ -65,13 +65,16 @@ namespace Flashcards.View
             if (stacks == null || stacks.Count == 0)
             {
                 AnsiConsole.MarkupLine("[red]No stacks available.[/]");
-                return null;
+                return (null, -1);
             }
 
-            var displayOptions = stacks.Select((stack, index) => new
+            var sortedStacks = stacks.OrderBy(stack => stack.Id).ToList();
+
+            var displayOptions = sortedStacks.Select((stack, index) => new
             {
                 DisplayText = $"{index + 1}: {stack.Name}",
-                Stack = stack
+                Stack = stack,
+                Index = index
             }).ToList();
 
             var rule = new Rule($"[green]{heading}[/]");
@@ -86,7 +89,7 @@ namespace Flashcards.View
 
             var selectedStack = displayOptions.First(option => option.DisplayText.StartsWith(selectedOption.Split(':')[0]));
 
-            return selectedStack.Stack;
+            return (selectedStack.Stack, selectedStack.Index);
         }
 
         public static void PrintAllStacks(string heading)
@@ -113,16 +116,12 @@ namespace Flashcards.View
 
             var sortedStacks = stacks.OrderBy(stack => stack.Id).ToList();
 
-            int displayId = 1;
+            int indexPlusOne = 1;
 
             foreach (var stack in sortedStacks)
             {
-                //table.AddRow(
-                //    stack.Id.ToString(),
-                //    stack.Name!
-                //);
-                table.AddRow(displayId.ToString(), stack.Name);
-                displayId++;
+                table.AddRow(indexPlusOne.ToString(), stack.Name);
+                indexPlusOne++;
             }
 
             AnsiConsole.Write(table);

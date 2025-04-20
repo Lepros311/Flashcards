@@ -10,7 +10,7 @@ namespace Flashcards.Controller
         {
             Display.PrintAllStacks("Add Stack");
 
-            string name = UI.PromptForAlphaNumericInput("Enter a name for the new stack: ");
+            string name = UI.PromptForAlphaNumericInput("\nEnter a name for the new stack: ");
 
             using (var connection = new SqlConnection(DatabaseUtility.GetConnectionString()))
             {
@@ -45,7 +45,11 @@ namespace Flashcards.Controller
 
             //int stackId = UI.PromptForId("Enter the ID of the stack you want to edit: ", "Stacks");
 
-            int stackId = Display.PrintStackSelectionMenu("Edit Stack", "Select a stack to edit...").Id;
+            var (stack, index) = Display.PrintStackSelectionMenu("Edit Stack", "Select a stack to edit...");
+
+            int stackId = stack.Id;
+
+            int indexPlusOne = index + 1;
 
             Display.PrintAllStacks("Edit Stack");
 
@@ -71,7 +75,7 @@ namespace Flashcards.Controller
                     }
                 }
 
-                Console.WriteLine($"\nSelected stack ID: {stackId}");
+                Console.WriteLine($"\nSelected stack ID: {indexPlusOne}");
                 Console.WriteLine($"Stack Name: {currentStackName}");
 
                 string newStackName = UI.PromptForAlphaNumericInput($"\nEnter new stack name (leave blank to keep current): ", true); 
@@ -112,11 +116,15 @@ namespace Flashcards.Controller
 
             //int stackId = UI.PromptForId("Enter the ID of the stack you want to delete: ", "Stacks");
 
-            int stackId = Display.PrintStackSelectionMenu("Delete Stack", "Select a stack to delete...").Id;
+            var (stack, index) = Display.PrintStackSelectionMenu("Delete Stack", "Select a stack to delete...");
+
+            int stackId = stack.Id;
+
+            int indexPlusOne = index + 1;
 
             Display.PrintAllStacks("Delete Stack");
 
-            if (UI.PromptForDeleteConfirmation(stackId, "stack") == "n")
+            if (UI.PromptForDeleteConfirmation(indexPlusOne, "stack") == "n")
             {
                 return;
             }

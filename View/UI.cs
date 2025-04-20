@@ -104,13 +104,13 @@ namespace Flashcards.View
             return Convert.ToInt32(input);
         }
 
-        public static string PromptForDeleteConfirmation(int recordId, string recordType)
+        public static string PromptForDeleteConfirmation(int indexPlusOne, string recordType)
         {
             string? confirmation;
             bool isValidConfirmation = false;
             do
             {
-                Console.Write($"Are you sure you want to delete the {recordType} with ID {recordId}? (y/n): ");
+                Console.Write($"\nAre you sure you want to delete the {recordType} with ID {indexPlusOne}? (y/n): ");
                 confirmation = Console.ReadLine();
                 isValidConfirmation = Validation.ValidateDeleteConfirmation(confirmation);
                 if (isValidConfirmation)
