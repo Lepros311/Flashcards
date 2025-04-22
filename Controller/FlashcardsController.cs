@@ -8,10 +8,6 @@ namespace Flashcards.Controller
     {
         public static void AddFlashcard()
         {
-            //Display.PrintAllStacks("Add Flashcard");
-
-            //int stackId = UI.PromptForId("Enter the ID of the stack you want to add a flashcard to: ", "Stacks");
-
             var (stack, index) = Display.PrintStackSelectionMenu("Add Flashcard", "Select the stack you want to add a flashcard to...");
 
             int stackId = stack.Id;
@@ -78,19 +74,11 @@ namespace Flashcards.Controller
 
         public static void EditFlashcard()
         {
-            //Display.PrintAllStacks("Edit Flashcard");
-
-            //int stackId = UI.PromptForId("Enter the ID of the flashcard's stack: ", "Stacks");
-
             var (stack, stackIndex) = Display.PrintStackSelectionMenu("Edit Flashcard", "Select the stack of the flashcard you want to edit...");
 
             int stackId = stack.Id;
 
             int stackIndexPlusOne = stackIndex + 1;
-
-            //Display.PrintAllFlashcardsForStack("Edit Flashcard", stackId);
-
-            //int flashcardId = UI.PromptForId("Enter the ID of the flashcard you want to edit: ", "Flashcards");
 
             var (flashcard, flashcardIndex) = Display.PrintFlashcardSelectionMenu("Edit Flashcard", "Select the flashcard you want to edit...", stackId);
 
@@ -167,21 +155,13 @@ namespace Flashcards.Controller
 
         public static void DeleteFlashcard()
         {
-            //Display.PrintAllStacks("Delete Flashcard");
-
-            //int stackId = UI.PromptForId("Enter the ID of the flashcard's stack: ", "Stacks");
-
             var (stack, stackIndex) = Display.PrintStackSelectionMenu("Delete Flashcard", "Select the stack of the flashcard you want to delete...");
 
             int stackId = stack.Id;
 
             int stackIndexPlusOne = stackIndex + 1;
 
-            //Display.PrintAllFlashcardsForStack("Delete Flashcard", stackId);
-
-            //int flashcardId = UI.PromptForId("Enter the ID of the flashcard you want to delete: ", "Flashcards");
-
-            var (flashcard, flashcardIndex) = Display.PrintFlashcardSelectionMenu("Delete Flashcard", "Select the flashcard you want to delete...", stackId);
+           var (flashcard, flashcardIndex) = Display.PrintFlashcardSelectionMenu("Delete Flashcard", "Select the flashcard you want to delete...", stackId);
 
             int flashcardId = flashcard.FlashcardId;
 

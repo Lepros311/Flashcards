@@ -266,6 +266,123 @@ namespace Flashcards.View
 
             AnsiConsole.Write(table);
         }
+
+        public static void PrintSessionsPerMonthReport()
+        {
+            int year = 2025;
+        
+            var connectionString = DatabaseUtility.GetConnectionString();
+            var query = $@"
+        DECLARE @StartDate DATE = CAST(CONCAT({year}, '-01-01') AS DATE);
+        DECLARE @EndDate DATE = CAST(CONCAT({year}, '-12-31') AS DATE);
+
+        SELECT 
+            StackName,
+            COALESCE([{year}-01], 0) AS [January],
+            COALESCE([{year}-02], 0) AS [February],
+            COALESCE([{year}-03], 0) AS [March],
+            COALESCE([{year}-04], 0) AS [April],
+            COALESCE([{year}-05], 0) AS [May],
+            COALESCE([{year}-06], 0) AS [June],
+            COALESCE([{year}-07], 0) AS [July],
+            COALESCE([{year}-08], 0) AS [August],
+            COALESCE([{year}-09], 0) AS [September],
+            COALESCE([{year}-10], 0) AS [October],
+            COALESCE([{year}-11], 0) AS [November],
+            COALESCE([{year}-12], 0) AS [December]
+        FROM (
+            SELECT 
+                S.StackName,
+                FORMAT(SS.SessionStartTime, 'yyyy-MM') AS SessionMonth,
+                COUNT(SS.SessionID) AS SessionCount
+            FROM 
+                StudySessionStats SS
+            JOIN 
+                Stacks S ON SS.StackID = S.StackID
+            WHERE 
+                SS.SessionStartTime >= @StartDate AND SS.SessionStartTime <= @EndDate
+            GROUP BY 
+                S.StackName, FORMAT(SS.SessionStartTime, 'yyyy-MM')
+        ) AS SourceTable
+        PIVOT (
+            SUM(SessionCount)
+            FOR SessionMonth IN ([{year}-01], [{year}-02], [{year}-03], [{year}-04], [{year}-05], 
+                                 [{year}-06], [{year}-07], [{year}-08], [{year}-09], [{year}-10], 
+                                 [{year}-11], [{year}-12])
+        ) AS PivotTable;";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                int desiredWidth = 135; 
+
+                int height = 30; 
+
+                int width = Math.Min(desiredWidth, Console.LargestWindowWidth);
+
+                Console.SetWindowSize(width, height);
+
+                var command = new SqlCommand(query, connection);
+
+                try
+                {
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+
+                    Console.Clear();
+
+                    var rule = new Rule($"[green]Study Sessions per Month for {year}[/]");
+                    rule.Justification = Justify.Left;
+                    AnsiConsole.Write(rule);
+
+                    var table = new Table()
+                        .Border(TableBorder.Rounded)
+                        .AddColumn(new TableColumn("[dodgerblue1]Stack Name[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]January[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]February[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]March[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]April[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]May[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]June[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]July[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]August[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]September[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]October[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]November[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]December[/]").Centered());
+
+                    if (!reader.HasRows)
+                    {
+                        AnsiConsole.MarkupLine("[red]No records found.[/]");
+                        return;
+                    }
+
+                    while (reader.Read())
+                    {
+                        table.AddRow(
+                            reader["StackName"].ToString(),
+                            reader["January"].ToString(),
+                            reader["February"].ToString(),
+                            reader["March"].ToString(),
+                            reader["April"].ToString(),
+                            reader["May"].ToString(),
+                            reader["June"].ToString(),
+                            reader["July"].ToString(),
+                            reader["August"].ToString(),
+                            reader["September"].ToString(),
+                            reader["October"].ToString(),
+                            reader["November"].ToString(),
+                            reader["December"].ToString()
+                        );
+                    }
+
+                    AnsiConsole.Write(table);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occurred: " + ex.Message);
+                }
+            }
+        }
     }
 
 

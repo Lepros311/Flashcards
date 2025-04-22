@@ -71,16 +71,10 @@ do
                 case "Return to Main Menu":
                     break;
                 case "View Flashcards":
-                    //Display.PrintAllStacks("View Flashcards");
-                    //int stackId = UI.PromptForId("Enter the stack ID of the flashcards you want to view: ", "Stacks");
-                    //Display.PrintAllFlashcardsForStack("View All Flashcards", stackId);
                     var (stack, stackIndex) = Display.PrintStackSelectionMenu("View Flashcards", "Select the stack of the flashcards you want to view...");
-
                     int stackId = stack.Id;
-
                     int stackIndexPlusOne = stackIndex + 1;
                     Display.PrintAllFlashcardsForStack("View Flashcards", stackId);
-
                     UI.ReturnToMainMenu();
                     break;
                 case "Add Flashcard":
@@ -105,12 +99,10 @@ do
             Display.PrintAllStudySessionData("View Study Sessions");
             UI.ReturnToMainMenu();
             break;
-        //case "View Full Report":
-        //    repository = new CodingSessionRepository(connection);
-        //    var reportData = repository.GetReportData();
-        //    Display.PrintReport(reportData);
-        //    UI.ReturnToMainMenu();
-        //    break;
+        case "View Full Report":
+            Display.PrintSessionsPerMonthReport();
+            UI.ReturnToMainMenu();
+            break;
         default:
             Console.WriteLine("Invalid choice.");
             break;

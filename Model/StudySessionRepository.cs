@@ -109,8 +109,8 @@ namespace Flashcards.Model
                 var studySessions = new List<(int StackID, int FlashcardID, string Question, string CorrectAnswer, string UserAnswer, bool AnsweredCorrectly, DateTime SessionStartTime, decimal PercentageCorrect)>
                 {
                     (1, 1, "What is 2 + 2?", "4", "4", true, DateTime.Now, 100.00m),
-                    (2, 2, "What is the chemical symbol for water?", "H20", "H20", true, DateTime.Now.AddMinutes(-30), 100.00m),
-                    (3, 3, "Who was the first president of the USA?", "George Washington", "Thomas Jefferson", false, DateTime.Now.AddMinutes(-60), 0.00m)
+                    (2, 2, "What is the chemical symbol for water?", "H20", "H20", true, DateTime.Now.AddMinutes(+30), 100.00m),
+                    (3, 3, "Who was the first president of the USA?", "George Washington", "Thomas Jefferson", false, DateTime.Now.AddMinutes(+60), 0.00m)
                 };
 
                 foreach (var (StackID, FlashcardID, Question, CorrectAnswer, UserAnswer, AnsweredCorrectly, SessionStartTime, PercentageCorrect) in studySessions)

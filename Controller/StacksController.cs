@@ -41,10 +41,6 @@ namespace Flashcards.Controller
 
         public static void EditStack()
         {
-            //Display.PrintAllStacks("Edit Stack");
-
-            //int stackId = UI.PromptForId("Enter the ID of the stack you want to edit: ", "Stacks");
-
             var (stack, index) = Display.PrintStackSelectionMenu("Edit Stack", "Select a stack to edit...");
 
             int stackId = stack.Id;
@@ -112,10 +108,6 @@ namespace Flashcards.Controller
 
         public static void DeleteStack()
         {
-            //Display.PrintAllStacks("Delete Stack");
-
-            //int stackId = UI.PromptForId("Enter the ID of the stack you want to delete: ", "Stacks");
-
             var (stack, index) = Display.PrintStackSelectionMenu("Delete Stack", "Select a stack to delete...");
 
             int stackId = stack.Id;

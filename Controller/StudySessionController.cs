@@ -8,11 +8,19 @@ namespace Flashcards.Controller
     {
         public static void Study()
         {
-            Display.PrintAllStacks("Study");
+            //Display.PrintAllStacks("Study");
 
-            int stackId = UI.PromptForId("Enter the ID of the stack you want to study: ", "Stacks");
+            //int stackId = UI.PromptForId("Enter the ID of the stack you want to study: ", "Stacks");
 
-            int numberOfFlashcardsToStudy = UI.PromptForNumberOfFlashcards("How many flashcards do you want to study during this session? ", stackId);
+            var (stack, stackIndex) = Display.PrintStackSelectionMenu("Study", "Select the stack of flashcards you want to study...");
+
+            int stackId = stack.Id;
+
+            int stackIndexPlusOne = stackIndex + 1;
+
+            Console.WriteLine($"\nStack selected: {stack.Name}");
+
+            int numberOfFlashcardsToStudy = UI.PromptForNumberOfFlashcards("\nHow many flashcards do you want to study during this session? ", stackId);
 
             Console.Clear();
 
@@ -51,7 +59,7 @@ namespace Flashcards.Controller
                 }
                 else
                 {
-                    Console.WriteLine($"\n\tIncorrect! The correct answer is: {flashcard.Answer}");
+                    Console.WriteLine($"\n\tIncorrect. The correct answer is: {flashcard.Answer}");
                 }
 
                 shownIndices.Add(randomIndex);
