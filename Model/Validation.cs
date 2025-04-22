@@ -1,4 +1,6 @@
-﻿namespace Flashcards.Model
+﻿using System.Globalization;
+
+namespace Flashcards.Model
 {
     internal class Validation
     {
@@ -26,6 +28,26 @@
                     return false;
                 }
             }
+        }
+
+        public static bool ValidateYearInput(string input)
+        {
+            if (DateTime.TryParseExact(input, "yyyy", CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out DateTime date))
+            {
+                if ((date.Year >= 2000) && (date.Year <= DateTime.Now.Year))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+            
         }
 
         public static bool ValidateNumericInput(string input)

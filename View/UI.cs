@@ -45,6 +45,27 @@ namespace Flashcards.View
             return input;
         }
 
+        public static string PromptForReportYear(string message)
+        {
+            string? yearInput;
+            bool isValidInput = false;
+            do
+            {
+                Console.Write(message);
+                yearInput = Console.ReadLine();
+                if (Validation.ValidateYearInput(yearInput))
+                {
+                    isValidInput = true;
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid input. Please enter a valid year between 2000 and {DateTime.Now.Year} in yyyy format.");
+                }
+            } while (isValidInput == false);
+
+            return yearInput;
+        }
+
         public static int PromptForId(string message, string tableName)
         {
             string? input;

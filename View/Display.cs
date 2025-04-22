@@ -269,7 +269,7 @@ namespace Flashcards.View
 
         public static void PrintSessionsPerMonthReport()
         {
-            int year = 2025;
+            string year = UI.PromptForReportYear("\nEnter the year you would like to report on (yyyy): ");
         
             var connectionString = DatabaseUtility.GetConnectionString();
             var query = $@"
