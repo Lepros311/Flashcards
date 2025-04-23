@@ -65,7 +65,7 @@ namespace Flashcards.View
                 .PageSize(10)
                 .AddChoices(new[]
                 {
-                    "View Report: Study Sessions per Month", "View Report: Average Scores per Month"
+                    "Return to Main Menu", "View Report: Study Sessions per Month", "View Report: Average Scores per Month"
                 }));
 
             return menuChoice;
