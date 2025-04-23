@@ -17,7 +17,7 @@ namespace Flashcards.View
                 .PageSize(10)
                 .AddChoices(new[]
                 {
-                    "Close Application", "Manage Stacks", "Manage Flashcards", "Study", "View Study Session Data", "View Full Report"
+                    "Close Application", "Manage Stacks", "Manage Flashcards", "Study", "View Study Session Data", "Reports"
                 }));
 
             return menuChoice;
@@ -50,6 +50,22 @@ namespace Flashcards.View
                 .AddChoices(new[]
                 {
                     "Return to Main Menu", "View Flashcards", "Add Flashcard", "Edit Flashcard", "Delete Flashcard"
+                }));
+
+            return menuChoice;
+        }
+
+        public static string PrintReportsMenu()
+        {
+            Console.Clear();
+
+            var menuChoice = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                .Title("REPORTS MENU")
+                .PageSize(10)
+                .AddChoices(new[]
+                {
+                    "View Report: Study Sessions per Month", "View Report: Average Scores per Month"
                 }));
 
             return menuChoice;
@@ -352,7 +368,7 @@ namespace Flashcards.View
 
                     if (!reader.HasRows)
                     {
-                        AnsiConsole.MarkupLine("[red]No records found.[/]");
+                        AnsiConsole.MarkupLine("\n[red]No records found.[/]");
                         return;
                     }
 

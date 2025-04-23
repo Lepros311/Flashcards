@@ -86,7 +86,7 @@ do
                     UI.ReturnToMainMenu();
                     break;
                 case "Delete Flashcard":
-                        FlashcardsController.DeleteFlashcard();
+                    FlashcardsController.DeleteFlashcard();
                     UI.ReturnToMainMenu();
                     break;
             }
@@ -99,9 +99,22 @@ do
             Display.PrintAllStudySessionData("View Study Sessions");
             UI.ReturnToMainMenu();
             break;
-        case "View Full Report":
-            Display.PrintSessionsPerMonthReport();
-            UI.ReturnToMainMenu();
+        case "Reports":
+            menuChoice = Display.PrintReportsMenu();
+
+            switch (menuChoice)
+            {
+                case "Return to Main Menu":
+                    break;
+                case "View Report: Study Sessions per Month":
+                    Display.PrintSessionsPerMonthReport();
+                    UI.ReturnToMainMenu();
+                    break;
+                case "View Report: Average Scores per Month":
+                    //Display.PrintAverageScoresPerMonthReport();
+                    UI.ReturnToMainMenu();
+                    break;
+            }
             break;
         default:
             Console.WriteLine("Invalid choice.");
