@@ -4,12 +4,25 @@ namespace Flashcards.Model
 {
     internal class Validation
     {
-        public static bool ValidateAlphaNumericInput(string input, bool forEdit = false)
+        public static bool ValidateAlphaNumericInput(string input, bool forEdit = false, bool forStackName = false)
         {
             if (!forEdit)
             {
                 if (!string.IsNullOrWhiteSpace(input) && (input.Any(char.IsLetter) || input.Any(char.IsDigit)))
                 {
+                    if (forStackName)
+                    {
+                        StacksRepository stacksRepo = new StacksRepository(DatabaseUtility.GetConnectionString());
+                        List<Stacks> stacks = stacksRepo.GetAllStacks();
+                        foreach (Stacks stack in stacks)
+                        {
+                            if (stack.Name.Trim().ToLower() == input.Trim().ToLower())
+                            {
+                                return false;
+                            }
+                        }
+
+                    }
                     return true;
                 }
                 else

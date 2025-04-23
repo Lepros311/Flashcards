@@ -10,7 +10,7 @@ namespace Flashcards.Controller
         {
             Display.PrintAllStacks("Add Stack");
 
-            string name = UI.PromptForAlphaNumericInput("\nEnter a name for the new stack: ");
+            string name = UI.PromptForAlphaNumericInput("\nEnter a name for the new stack: ", false, true);
 
             using (var connection = new SqlConnection(DatabaseUtility.GetConnectionString()))
             {

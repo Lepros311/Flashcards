@@ -8,11 +8,7 @@ namespace Flashcards.Controller
     {
         public static void Study()
         {
-            //Display.PrintAllStacks("Study");
-
-            //int stackId = UI.PromptForId("Enter the ID of the stack you want to study: ", "Stacks");
-
-            var (stack, stackIndex) = Display.PrintStackSelectionMenu("Study", "Select the stack of flashcards you want to study...");
+           var (stack, stackIndex) = Display.PrintStackSelectionMenu("Study", "Select the stack of flashcards you want to study...");
 
             int stackId = stack.Id;
 

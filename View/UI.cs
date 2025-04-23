@@ -11,7 +11,7 @@ namespace Flashcards.View
             Console.ReadKey();
         }
 
-        public static string PromptForAlphaNumericInput(string message, bool forEdit = false)
+        public static string PromptForAlphaNumericInput(string message, bool forEdit = false, bool forStackName = false)
         {
             string? input;
             bool isValidInput = false;
@@ -25,6 +25,17 @@ namespace Flashcards.View
                     if (Validation.ValidateAlphaNumericInput(input) == false)
                     {
                         Console.WriteLine("Invalid input.");
+                    }
+                    else if (forStackName)
+                    {
+                        if (Validation.ValidateAlphaNumericInput(input, false, true) == false)
+                        {
+                            Console.WriteLine("Invalid input. A stack with that name already exists.");
+                        }
+                        else
+                        {
+                            isValidInput = true;
+                        }
                     }
                     else
                     {
