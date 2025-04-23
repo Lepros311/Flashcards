@@ -308,24 +308,24 @@ namespace Flashcards.View
             COALESCE([{year}-12], 0) AS [December]
         FROM (
             SELECT 
+                S.StackId,
                 S.StackName,
                 FORMAT(SS.SessionStartTime, 'yyyy-MM') AS SessionMonth,
                 COUNT(SS.SessionID) AS SessionCount
             FROM 
-                StudySessionStats SS
-            JOIN 
-                Stacks S ON SS.StackID = S.StackID
-            WHERE 
-                SS.SessionStartTime >= @StartDate AND SS.SessionStartTime <= @EndDate
+                Stacks S
+            LEFT JOIN 
+                StudySessionStats SS ON SS.StackID = S.StackID AND SS.SessionStartTime >= @StartDate AND SS.SessionStartTime <= @EndDate
             GROUP BY 
-                S.StackName, FORMAT(SS.SessionStartTime, 'yyyy-MM')
+                S.StackId, S.StackName, FORMAT(SS.SessionStartTime, 'yyyy-MM')
         ) AS SourceTable
         PIVOT (
             SUM(SessionCount)
             FOR SessionMonth IN ([{year}-01], [{year}-02], [{year}-03], [{year}-04], [{year}-05], 
                                  [{year}-06], [{year}-07], [{year}-08], [{year}-09], [{year}-10], 
                                  [{year}-11], [{year}-12])
-        ) AS PivotTable;";
+        ) AS PivotTable
+        ORDER BY StackId ASC;";
 
             using (var connection = new SqlConnection(connectionString))
             {
@@ -399,9 +399,122 @@ namespace Flashcards.View
                 }
             }
         }
-    }
 
+        public static void PrintAverageScoresPerMonthReport()
+        {
+            string year = UI.PromptForReportYear("\nEnter the year you would like to report on (yyyy): ");
 
-        
-    
+            var connectionString = DatabaseUtility.GetConnectionString();
+
+            var query = $@"
+    DECLARE @StartDate DATE = CAST(CONCAT({year}, '-01-01') AS DATE);
+    DECLARE @EndDate DATE = CAST(CONCAT({year}, '-12-31') AS DATE);
+
+    SELECT 
+        StackName,
+        COALESCE([{year}-01], 0) AS [January],
+        COALESCE([{year}-02], 0) AS [February],
+        COALESCE([{year}-03], 0) AS [March],
+        COALESCE([{year}-04], 0) AS [April],
+        COALESCE([{year}-05], 0) AS [May],
+        COALESCE([{year}-06], 0) AS [June],
+        COALESCE([{year}-07], 0) AS [July],
+        COALESCE([{year}-08], 0) AS [August],
+        COALESCE([{year}-09], 0) AS [September],
+        COALESCE([{year}-10], 0) AS [October],
+        COALESCE([{year}-11], 0) AS [November],
+        COALESCE([{year}-12], 0) AS [December]
+    FROM (
+        SELECT 
+            S.StackId,
+            S.StackName,
+            FORMAT(SS.SessionStartTime, 'yyyy-MM') AS SessionMonth,
+            AVG(SS.PercentageCorrect) AS AverageScore
+        FROM 
+            Stacks S
+        LEFT JOIN 
+            StudySessionStats SS ON S.StackId = SS.StackID AND SS.SessionStartTime >= @StartDate AND SS.SessionStartTime <= @EndDate
+        GROUP BY 
+            S.StackId, S.StackName, FORMAT(SS.SessionStartTime, 'yyyy-MM')
+    ) AS SourceTable
+    PIVOT (
+        AVG(AverageScore) FOR SessionMonth IN ([{year}-01], [{year}-02], [{year}-03], [{year}-04], [{year}-05], 
+                                                [{year}-06], [{year}-07], [{year}-08], [{year}-09], 
+                                                [{year}-10], [{year}-11], [{year}-12])
+    ) AS PivotTable
+    ORDER BY StackId ASC;";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                int desiredWidth = 135;
+
+                int height = 30;
+
+                int width = Math.Min(desiredWidth, Console.LargestWindowWidth);
+
+                Console.SetWindowSize(width, height);
+
+                var command = new SqlCommand(query, connection);
+
+                try
+                {
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+
+                    Console.Clear();
+
+                    var rule = new Rule($"[green]Average Scores per Month for {year}[/]");
+                    rule.Justification = Justify.Left;
+                    AnsiConsole.Write(rule);
+
+                    var table = new Table()
+                        .Border(TableBorder.Rounded)
+                        .AddColumn(new TableColumn("[dodgerblue1]Stack Name[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]January[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]February[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]March[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]April[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]May[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]June[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]July[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]August[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]September[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]October[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]November[/]").Centered())
+                        .AddColumn(new TableColumn("[dodgerblue1]December[/]").Centered());
+
+                    if (!reader.HasRows)
+                    {
+                        AnsiConsole.MarkupLine("\n[red]No records found.[/]");
+                        return;
+                    }
+
+                    while (reader.Read())
+                    {
+                        table.AddRow(
+                            reader["StackName"].ToString(),
+                            Math.Round(Convert.ToDecimal(reader["January"])).ToString() + "%",  
+                            Math.Round(Convert.ToDecimal(reader["February"])).ToString() + "%", 
+                            Math.Round(Convert.ToDecimal(reader["March"])).ToString() + "%",    
+                            Math.Round(Convert.ToDecimal(reader["April"])).ToString() + "%",    
+                            Math.Round(Convert.ToDecimal(reader["May"])).ToString() + "%",      
+                            Math.Round(Convert.ToDecimal(reader["June"])).ToString() + "%",     
+                            Math.Round(Convert.ToDecimal(reader["July"])).ToString() + "%",     
+                            Math.Round(Convert.ToDecimal(reader["August"])).ToString() + "%",   
+                            Math.Round(Convert.ToDecimal(reader["September"])).ToString() + "%",
+                            Math.Round(Convert.ToDecimal(reader["October"])).ToString() + "%",  
+                            Math.Round(Convert.ToDecimal(reader["November"])).ToString() + "%", 
+                            Math.Round(Convert.ToDecimal(reader["December"])).ToString() + "%"  
+                        );
+                    }
+
+                    AnsiConsole.Write(table);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occurred: " + ex.Message);
+                }
+            }
+        }
+    }  
 }

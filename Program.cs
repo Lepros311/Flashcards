@@ -111,7 +111,7 @@ do
                     UI.ReturnToMainMenu();
                     break;
                 case "View Report: Average Scores per Month":
-                    //Display.PrintAverageScoresPerMonthReport();
+                    Display.PrintAverageScoresPerMonthReport();
                     UI.ReturnToMainMenu();
                     break;
             }
