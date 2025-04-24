@@ -222,7 +222,8 @@ namespace Flashcards.View
 
             if (flashcards.Count == 0)
             {
-                AnsiConsole.MarkupLine("[red]No records found.[/]");
+                AnsiConsole.Write(new Markup($"\n [dodgerblue1]Stack:[/] [white]{stackName}[/]\n"));
+                AnsiConsole.MarkupLine("\n[red]No records found.[/]");
                 return;
             }
 
@@ -240,9 +241,7 @@ namespace Flashcards.View
                 indexPlusOne++;
             }
 
-            Console.WriteLine();
-            AnsiConsole.Write(new Markup($" [dodgerblue1]Stack:[/] [white]{stackName}[/]"));
-            Console.WriteLine();
+            AnsiConsole.Write(new Markup($"\n [dodgerblue1]Stack:[/] [white]{stackName}[/]\n"));
             AnsiConsole.Write(table);
         }
 

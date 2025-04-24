@@ -27,7 +27,7 @@ namespace Flashcards.Model
                             StackId INT NOT NULL,
                             Question TEXT NOT NULL,
                             Answer TEXT NOT NULL,
-                            FOREIGN KEY (StackID) REFERENCES Stacks(StackID) ON DELETE CASCADE
+                            FOREIGN KEY (StackID) REFERENCES Stacks(StackId) ON DELETE CASCADE
                         );
                     END;";
 

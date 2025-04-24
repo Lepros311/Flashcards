@@ -1,6 +1,8 @@
 ﻿using Flashcards.Model;
 using Flashcards.View;
 using Microsoft.Data.SqlClient;
+using Spectre.Console;
+using System.Diagnostics;
 
 namespace Flashcards.Controller
 {
@@ -14,7 +16,8 @@ namespace Flashcards.Controller
 
             int stackIndexPlusOne = stackIndex + 1;
 
-            Console.WriteLine($"\nStack selected: {stack.Name}");
+            //Console.WriteLine($"\nStack selected: {stack.Name}");
+            AnsiConsole.Write(new Markup($"\n[dodgerblue1]Stack:[/] [white]{stack.Name}[/]\n"));
 
             int numberOfFlashcardsToStudy = UI.PromptForNumberOfFlashcards("\nHow many flashcards do you want to study during this session? ", stackId);
 

@@ -79,7 +79,7 @@ namespace Flashcards.Model
                         StackID INT NOT NULL,
                         SessionStartTime DATETIME NOT NULL,
                         PercentageCorrect DECIMAL(5,2) NOT NULL,
-                        FOREIGN KEY (StackID) REFERENCES Stacks(StackID) ON DELETE CASCADE
+                        FOREIGN KEY (StackID) REFERENCES Stacks(StackId) ON DELETE CASCADE
                         );
                     END;";
 
