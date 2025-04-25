@@ -16,7 +16,6 @@ namespace Flashcards.Controller
 
             int stackIndexPlusOne = stackIndex + 1;
 
-            //Console.WriteLine($"\nStack selected: {stack.Name}");
             AnsiConsole.Write(new Markup($"\n[dodgerblue1]Stack:[/] [white]{stack.Name}[/]\n"));
 
             int numberOfFlashcardsToStudy = UI.PromptForNumberOfFlashcards("\nHow many flashcards do you want to study during this session? ", stackId);
@@ -43,7 +42,7 @@ namespace Flashcards.Controller
                     randomIndex = random.Next(flashcards.Count);
                 } while (shownIndices.Contains(randomIndex));
 
-                Flashcard flashcard = flashcards[randomIndex];
+                FlashcardDTO flashcard = flashcards[randomIndex];
 
                 Console.WriteLine($"\n\t{flashcard.Question}\n");
 

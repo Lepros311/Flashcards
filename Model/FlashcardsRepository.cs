@@ -1,5 +1,6 @@
 ﻿using Flashcards.Model;
 using Microsoft.Data.SqlClient;
+using Microsoft.Identity.Client;
 using Spectre.Console;
 using System.Security.Principal;
 
@@ -73,14 +74,14 @@ namespace Flashcards.Model
             }
         }
 
-        public List<Flashcard> GetAllFlashcardsForStack(int stackId)
+        public List<FlashcardDTO> GetAllFlashcardsForStack(int stackId)
         {
-            var flashcards = new List<Flashcard>();
+            var flashcards = new List<FlashcardDTO>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                string query = @"SELECT * FROM Flashcards WHERE StackId = @stackId ORDER BY FlashcardID DESC";
+                string query = @"SELECT FlashcardId, Question, Answer FROM Flashcards WHERE StackId = @stackId ORDER BY FlashcardId DESC";
 
                 using (var command = new SqlCommand(query, connection))
                 {
@@ -90,12 +91,12 @@ namespace Flashcards.Model
                     {
                         while (reader.Read())
                         {
-                            var flashcard = new Flashcard
+                            var flashcard = new FlashcardDTO
                             {
                                 FlashcardId = reader.GetInt32(0),
-                                StackId = reader.GetInt32(1),
-                                Question = reader.GetString(2),
-                                Answer = reader.GetString(3)
+                                //StackId = reader.GetInt32(1),
+                                Question = reader.GetString(1),
+                                Answer = reader.GetString(2)
                             };
                             flashcards.Add(flashcard);
                         }
