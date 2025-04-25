@@ -269,14 +269,17 @@ namespace Flashcards.View
                 return;
             }
 
+            int count = sessions.Count;
+
             foreach (var session in sessions)
             {
                 table.AddRow(
-                    session.Id.ToString(),
+                    count.ToString(),
                     session.StackName.ToString(),
                     session.SessionStartTime.ToString("MMMM dd, yyyy h:mm tt"),
                     session.PercentageCorrect.ToString("0") + "%"
                 );
+                count--;
             }
 
             AnsiConsole.Write(table);
