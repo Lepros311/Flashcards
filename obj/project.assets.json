@@ -47,6 +47,19 @@
           }
         }
       },
+      "Dapper/2.1.66": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/Dapper.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Dapper.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Microsoft.Bcl.AsyncInterfaces/1.1.1": {
         "type": "package",
         "compile": {
@@ -74,7 +87,7 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "Microsoft.Data.SqlClient/6.0.1": {
+      "Microsoft.Data.SqlClient/6.0.2": {
         "type": "package",
         "dependencies": {
           "Azure.Identity": "1.11.4",
@@ -873,6 +886,25 @@
         "lib/netstandard2.0/Azure.Identity.xml"
       ]
     },
+    "Dapper/2.1.66": {
+      "sha512": "/q77jUgDOS+bzkmk3Vy9SiWMaetTw+NOoPAV0xPBsGVAyljd5S6P+4RUW7R3ZUGGr9lDRyPKgAMj2UAOwvqZYw==",
+      "type": "package",
+      "path": "dapper/2.1.66",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Dapper.png",
+        "dapper.2.1.66.nupkg.sha512",
+        "dapper.nuspec",
+        "lib/net461/Dapper.dll",
+        "lib/net461/Dapper.xml",
+        "lib/net8.0/Dapper.dll",
+        "lib/net8.0/Dapper.xml",
+        "lib/netstandard2.0/Dapper.dll",
+        "lib/netstandard2.0/Dapper.xml",
+        "readme.md"
+      ]
+    },
     "Microsoft.Bcl.AsyncInterfaces/1.1.1": {
       "sha512": "yuvf07qFWFqtK3P/MRkEKLhn5r2UbSpVueRziSqj0yJQIKFwG1pq9mOayK3zE5qZCTs0CbrwL9M6R8VwqyGy2w==",
       "type": "package",
@@ -924,10 +956,10 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.Data.SqlClient/6.0.1": {
-      "sha512": "v7HxnYYXGGCJilxeQ4Pdks+popVuGajBpHmau0RU4ACIcbfs5qCNUnCogGpZ+CJ//8Qafhxq7vc5a8L9d6O8Eg==",
+    "Microsoft.Data.SqlClient/6.0.2": {
+      "sha512": "RDqwzNu5slSqGy0eSgnN4fuLdGI1w9ZHBRNALrbUsykOIbXtGCpyotG0r5zz+HHtzxbe6LtcAyWcOiu0a+Fx/A==",
       "type": "package",
-      "path": "microsoft.data.sqlclient/6.0.1",
+      "path": "microsoft.data.sqlclient/6.0.2",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -978,7 +1010,7 @@
         "lib/net9.0/tr/Microsoft.Data.SqlClient.resources.dll",
         "lib/net9.0/zh-Hans/Microsoft.Data.SqlClient.resources.dll",
         "lib/net9.0/zh-Hant/Microsoft.Data.SqlClient.resources.dll",
-        "microsoft.data.sqlclient.6.0.1.nupkg.sha512",
+        "microsoft.data.sqlclient.6.0.2.nupkg.sha512",
         "microsoft.data.sqlclient.nuspec",
         "ref/net462/Microsoft.Data.SqlClient.dll",
         "ref/net462/Microsoft.Data.SqlClient.xml",
@@ -2149,7 +2181,8 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "Microsoft.Data.SqlClient >= 6.0.1",
+      "Dapper >= 2.1.66",
+      "Microsoft.Data.SqlClient >= 6.0.2",
       "Microsoft.Extensions.Configuration >= 9.0.4",
       "Microsoft.Extensions.Configuration.Json >= 9.0.4",
       "Spectre.Console >= 0.50.0"
@@ -2206,9 +2239,13 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "Dapper": {
+            "target": "Package",
+            "version": "[2.1.66, )"
+          },
           "Microsoft.Data.SqlClient": {
             "target": "Package",
-            "version": "[6.0.1, )"
+            "version": "[6.0.2, )"
           },
           "Microsoft.Extensions.Configuration": {
             "target": "Package",

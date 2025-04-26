@@ -1,8 +1,6 @@
 ﻿using Flashcards.Model;
 using Flashcards.View;
-using Microsoft.Data.SqlClient;
 using Spectre.Console;
-using System.Diagnostics;
 
 namespace Flashcards.Controller
 {
@@ -10,7 +8,7 @@ namespace Flashcards.Controller
     {
         public static void Study()
         {
-           var (stack, stackIndex) = Display.PrintStackSelectionMenu("Study", "Select the stack of flashcards you want to study...");
+            var (stack, stackIndex) = Display.PrintStackSelectionMenu("Study", "Select the stack of flashcards you want to study...");
 
             int stackId = stack.Id;
 

@@ -1,5 +1,4 @@
 ﻿using Flashcards.Model;
-using Spectre.Console;
 
 namespace Flashcards.View
 {
@@ -44,13 +43,13 @@ namespace Flashcards.View
                 }
                 else
                     if (Validation.ValidateAlphaNumericInput(input, true) == false)
-                    {
-                        Console.WriteLine("Invalid input.");
-                    }
-                    else
-                    {
-                        isValidInput = true;
-                    }
+                {
+                    Console.WriteLine("Invalid input.");
+                }
+                else
+                {
+                    isValidInput = true;
+                }
             } while (isValidInput == false);
 
             return input;
@@ -130,7 +129,7 @@ namespace Flashcards.View
                         isValidInput = true;
                     }
                 }
-  
+
             } while (isValidInput == false);
 
             return Convert.ToInt32(input);
@@ -157,7 +156,7 @@ namespace Flashcards.View
                         return "y";
                     }
                 }
-                else 
+                else
                 {
                     Console.WriteLine("Invalid response.\n");
                 }

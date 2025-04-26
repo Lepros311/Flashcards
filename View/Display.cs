@@ -1,7 +1,7 @@
-﻿using Spectre.Console;
+﻿using Flashcards.Model;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
-using Flashcards.Model;
+using Spectre.Console;
+using Dapper;
 
 namespace Flashcards.View
 {
@@ -187,24 +187,17 @@ namespace Flashcards.View
 
             string? stackName = null;
 
+            string stackQuery = "SELECT StackName FROM Stacks WHERE StackId = @stackId";
+
             using (var connection = new SqlConnection(DatabaseUtility.GetConnectionString()))
             {
                 connection.Open();
 
-                string stackQuery = "SELECT StackName FROM Stacks WHERE StackId = @stackId";
+                IEnumerable<Stacks> stacks = connection.Query<Stacks>(stackQuery, new { stackId });
 
-                using (var command = connection.CreateCommand())
+                foreach (var stack in stacks)
                 {
-                    command.CommandText = stackQuery;
-                    command.Parameters.AddWithValue("@stackId", stackId);
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            stackName = reader["StackName"].ToString();
-                        }
-                    }
+                    stackName = stack.Name;
                 }
             }
 
@@ -288,7 +281,7 @@ namespace Flashcards.View
         public static void PrintSessionsPerMonthReport()
         {
             string year = UI.PromptForReportYear("\nEnter the year you would like to report on (yyyy): ");
-        
+
             var connectionString = DatabaseUtility.GetConnectionString();
             var query = $@"
         DECLARE @StartDate DATE = CAST(CONCAT({year}, '-01-01') AS DATE);
@@ -331,9 +324,9 @@ namespace Flashcards.View
 
             using (var connection = new SqlConnection(connectionString))
             {
-                int desiredWidth = 135; 
+                int desiredWidth = 135;
 
-                int height = 30; 
+                int height = 30;
 
                 int width = Math.Min(desiredWidth, Console.LargestWindowWidth);
 
@@ -495,18 +488,18 @@ namespace Flashcards.View
                     {
                         table.AddRow(
                             reader["StackName"].ToString(),
-                            Math.Round(Convert.ToDecimal(reader["January"])).ToString() + "%",  
-                            Math.Round(Convert.ToDecimal(reader["February"])).ToString() + "%", 
-                            Math.Round(Convert.ToDecimal(reader["March"])).ToString() + "%",    
-                            Math.Round(Convert.ToDecimal(reader["April"])).ToString() + "%",    
-                            Math.Round(Convert.ToDecimal(reader["May"])).ToString() + "%",      
-                            Math.Round(Convert.ToDecimal(reader["June"])).ToString() + "%",     
-                            Math.Round(Convert.ToDecimal(reader["July"])).ToString() + "%",     
-                            Math.Round(Convert.ToDecimal(reader["August"])).ToString() + "%",   
+                            Math.Round(Convert.ToDecimal(reader["January"])).ToString() + "%",
+                            Math.Round(Convert.ToDecimal(reader["February"])).ToString() + "%",
+                            Math.Round(Convert.ToDecimal(reader["March"])).ToString() + "%",
+                            Math.Round(Convert.ToDecimal(reader["April"])).ToString() + "%",
+                            Math.Round(Convert.ToDecimal(reader["May"])).ToString() + "%",
+                            Math.Round(Convert.ToDecimal(reader["June"])).ToString() + "%",
+                            Math.Round(Convert.ToDecimal(reader["July"])).ToString() + "%",
+                            Math.Round(Convert.ToDecimal(reader["August"])).ToString() + "%",
                             Math.Round(Convert.ToDecimal(reader["September"])).ToString() + "%",
-                            Math.Round(Convert.ToDecimal(reader["October"])).ToString() + "%",  
-                            Math.Round(Convert.ToDecimal(reader["November"])).ToString() + "%", 
-                            Math.Round(Convert.ToDecimal(reader["December"])).ToString() + "%"  
+                            Math.Round(Convert.ToDecimal(reader["October"])).ToString() + "%",
+                            Math.Round(Convert.ToDecimal(reader["November"])).ToString() + "%",
+                            Math.Round(Convert.ToDecimal(reader["December"])).ToString() + "%"
                         );
                     }
 
@@ -518,5 +511,5 @@ namespace Flashcards.View
                 }
             }
         }
-    }  
+    }
 }

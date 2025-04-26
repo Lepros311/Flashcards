@@ -1,8 +1,4 @@
-﻿using Flashcards.Model;
-using Microsoft.Data.SqlClient;
-using Microsoft.Identity.Client;
-using Spectre.Console;
-using System.Security.Principal;
+﻿using Microsoft.Data.SqlClient;
 
 namespace Flashcards.Model
 {
