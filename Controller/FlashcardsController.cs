@@ -46,57 +46,40 @@ namespace Flashcards.Controller
 
             int stackId = stack.Id;
 
-            int stackIndexPlusOne = stackIndex + 1;
-
             var (flashcard, flashcardIndex) = Display.PrintFlashcardSelectionMenu("Edit Flashcard", "Select the flashcard you want to edit...", stackId);
 
             int flashcardId = flashcard.FlashcardId;
 
             int flashcardIndexPlusOne = flashcardIndex + 1;
 
-            string? currentQuestion = null;
-            string? currentAnswer = null;
-
             using (var connection = new SqlConnection(DatabaseUtility.GetConnectionString()))
             {
                 connection.Open();
 
                 string flashcardQuery = "SELECT * FROM Flashcards WHERE flashcardId = @flashcardId";
+                var flashcardData = connection.QuerySingleOrDefault(flashcardQuery, new {flashcardId});
 
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = flashcardQuery;
-                    command.Parameters.AddWithValue("@flashcardId", flashcardId);
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            currentQuestion = reader["Question"].ToString();
-                            currentAnswer = reader["Answer"].ToString();
-                        }
-                    }
-                }
+                Display.PrintAllFlashcardsForStack("Edit Flashcard", stackId);
 
                 Console.WriteLine($"\nSelected flashcard ID: {flashcardIndexPlusOne}");
-                Console.WriteLine($"Question: {currentQuestion}");
-                Console.WriteLine($"Answer: {currentAnswer}");
+                Console.WriteLine($"Question: {flashcardData.Question}");
+                Console.WriteLine($"Answer: {flashcardData.Answer}");
 
                 string newQuestion = UI.PromptForAlphaNumericInput($"\nEnter new question (leave blank to keep current): ", true);
 
                 if (string.IsNullOrEmpty(newQuestion))
                 {
-                    newQuestion = currentQuestion!;
+                    newQuestion = flashcardData.Question;
                 }
 
                 string newAnswer = UI.PromptForAlphaNumericInput($"\nEnter new answer (leave blank to keep current): ", true);
 
                 if (string.IsNullOrEmpty(newAnswer))
                 {
-                    newAnswer = currentAnswer!;
+                    newAnswer = flashcardData.Answer!;
                 }
 
-                if (newQuestion == currentQuestion && newAnswer == currentAnswer)
+                if (newQuestion == flashcardData.Question && newAnswer == flashcardData.Answer)
                 {
                     Console.WriteLine("\nNo changes were made.");
                     return;
@@ -104,19 +87,16 @@ namespace Flashcards.Controller
 
                 string updateFlashcardQuery = "UPDATE Flashcards SET Question = @newQuestion, Answer = @newAnswer WHERE FlashcardId = @flashcardId";
 
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = updateFlashcardQuery;
-                    command.Parameters.AddWithValue("@flashcardId", flashcardId);
-                    command.Parameters.AddWithValue("@newQuestion", newQuestion);
-                    command.Parameters.AddWithValue("@newAnswer", newAnswer);
+                int rowsAffected = connection.Execute(updateFlashcardQuery, new {flashcardId, newQuestion, newAnswer});
 
-                    int rowsAffected = command.ExecuteNonQuery();
-                    if (rowsAffected > 0)
-                    {
-                        Display.PrintAllFlashcardsForStack("Edit Flashcard", stackId);
-                        Console.WriteLine("\nFlashcard updated successfully!");
-                    }
+                if (rowsAffected > 0)
+                {
+                    Display.PrintAllFlashcardsForStack("Edit Flashcard", stackId);
+                    Console.WriteLine("\nFlashcard updated successfully!");
+                }
+                else
+                {
+                    Console.WriteLine("\nFailed to update flashcard.");
                 }
             }
         }
@@ -127,9 +107,8 @@ namespace Flashcards.Controller
 
             int stackId = stack.Id;
 
-            int stackIndexPlusOne = stackIndex + 1;
 
-           var (flashcard, flashcardIndex) = Display.PrintFlashcardSelectionMenu("Delete Flashcard", "Select the flashcard you want to delete...", stackId);
+            var (flashcard, flashcardIndex) = Display.PrintFlashcardSelectionMenu("Delete Flashcard", "Select the flashcard you want to delete...", stackId);
 
             int flashcardId = flashcard.FlashcardId;
 
@@ -142,32 +121,26 @@ namespace Flashcards.Controller
                 return;
             }
 
+            string deleteQuery = @"
+                    DELETE FROM Flashcards
+                    WHERE FlashcardId = @flashcardId";
+
             using (var connection = new SqlConnection(DatabaseUtility.GetConnectionString()))
             {
                 connection.Open();
 
-                string deleteQuery = @"
-                    DELETE FROM Flashcards
-                    WHERE FlashcardId = @flashcardId";
+                int rowsAffected = connection.Execute(deleteQuery, new {flashcardId});
 
-                using (var command = connection.CreateCommand())
+                if (rowsAffected > 0)
                 {
-                    command.CommandText = deleteQuery;
-                    command.Parameters.AddWithValue("@flashcardId", flashcardId);
-
-                    int rowsAffected = command.ExecuteNonQuery();
-                    if (rowsAffected > 0)
-                    {
-                        Display.PrintAllFlashcardsForStack("Delete Flashcard", stackId);
-                        Console.WriteLine("\nFlashcard deleted successfully!");
-                    }
-                    else
-                    {
-                        Console.WriteLine("\nNo flashcard found with that ID. Deletion failed.");
-                    }
+                    Display.PrintAllFlashcardsForStack("Delete Flashcard", stackId);
+                    Console.WriteLine("\nFlashcard deleted successfully!");
+                }
+                else
+                {
+                    Console.WriteLine("\nNo flashcard found with that ID. Deletion failed.");
                 }
             }
-
         }
     }
 }

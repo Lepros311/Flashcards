@@ -187,18 +187,15 @@ namespace Flashcards.View
 
             string? stackName = null;
 
-            string stackQuery = "SELECT StackName FROM Stacks WHERE StackId = @stackId";
+            string stackQuery = "SELECT StackName AS Name FROM Stacks WHERE StackId = @stackId";
 
             using (var connection = new SqlConnection(DatabaseUtility.GetConnectionString()))
             {
                 connection.Open();
 
-                IEnumerable<Stacks> stacks = connection.Query<Stacks>(stackQuery, new { stackId });
+                Stacks stack = connection.QuerySingleOrDefault<Stacks>(stackQuery, new { stackId });
 
-                foreach (var stack in stacks)
-                {
-                    stackName = stack.Name;
-                }
+                stackName = stack.Name.ToString();
             }
 
             Console.Clear();
